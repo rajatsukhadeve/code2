@@ -267,5 +267,56 @@
                 }
             ]
         }
+    ],
+    "chatHistory": [
+        {
+            "timestamp": "2025-08-19T16:26:18.148Z",
+            "userMessage": "hlw",
+            "aiResponse": "Workflow 1923e305-a659-4a5d-ac7d-a1702094840f triggered successfully",
+            "source": "worqhat_api",
+            "success": true
+        },
+        {
+            "timestamp": "2025-08-19T16:26:33.839Z",
+            "userMessage": "how are you",
+            "aiResponse": "Workflow 1923e305-a659-4a5d-ac7d-a1702094840f triggered successfully",
+            "source": "worqhat_api",
+            "success": true
+        },
+        {
+            "timestamp": "2025-08-19T16:39:30.049Z",
+            "userMessage": "hi",
+            "aiResponse": "Workflow 1923e305-a659-4a5d-ac7d-a1702094840f triggered successfully",
+            "source": "worqhat_api",
+            "success": true
+        },
+        {
+            "timestamp": "2025-08-19T16:40:04.438Z",
+            "userMessage": "hii",
+            "aiResponse": "Workflow 1923e305-a659-4a5d-ac7d-a1702094840f triggered successfully",
+            "source": "worqhat_api",
+            "success": true
+        },
+        {
+            "timestamp": "2025-08-19T16:42:56.853Z",
+            "userMessage": "hi",
+            "aiResponse": "Workflow 1923e305-a659-4a5d-ac7d-a1702094840f triggered successfully",
+            "source": "worqhat_api",
+            "success": true
+        },
+        {
+            "timestamp": "2025-08-19T16:53:38.393Z",
+            "userMessage": "hi",
+            "aiResponse": "Workflow 1923e305-a659-4a5d-ac7d-a1702094840f triggered successfully",
+            "source": "worqhat_api",
+            "success": true
+        },
+        {
+            "timestamp": "2025-08-19T16:54:02.239Z",
+            "userMessage": "hi",
+            "aiResponse": "Workflow 1923e305-a659-4a5d-ac7d-a1702094840f triggered successfully",
+            "source": "worqhat_api",
+            "success": true
+        }
     ]
 }

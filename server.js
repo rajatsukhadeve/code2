@@ -8,8 +8,8 @@ const axios = require('axios'); // Add axios for API calls
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Worqhat API Configuration
-const WORQHAT_API_URL = 'https://api.worqhat.com/flows/trigger/1923e305-a659-4a5d-ac7d-a1702094840f';
+// Worqhat API Configuration for Chatbot
+const WORQHAT_CHAT_API_URL = 'https://api.worqhat.com/flows/trigger/1923e305-a659-4a5d-ac7d-a1702094840f';
 const WORQHAT_API_KEY = 'wh_mehdbcs4Y97ep40HOnJPW2YzcjsGhGHJUrdmatuCKt1';
 
 // Middleware to parse JSON bodies and serve static files
@@ -33,7 +33,7 @@ const readDB = () => {
     } catch (error) {
         console.error("Error reading database:", error);
         // Return a default structure if the file doesn't exist or is empty
-        return { users: [], lessons: [], riddles: [] };
+        return { users: [], lessons: [], riddles: [], chatHistory: [] };
     }
 };
 
@@ -46,6 +46,200 @@ const writeDB = (data) => {
     }
 };
 
+// --- CHATBOT API FUNCTION ---
+const getChatbotResponse = async (message, conversationHistory = []) => {
+    try {
+        console.log('🤖 Sending message to Worqhat API:', message.substring(0, 100) + '...');
+        
+        // Prepare the context from conversation history
+        let context = '';
+        if (conversationHistory.length > 0) {
+            context = conversationHistory.slice(-5).map(msg => 
+                `${msg.isUser ? 'User' : 'Assistant'}: ${msg.content}`
+            ).join('\n');
+        }
+
+        // Create the payload for Worqhat API
+        const payload = {
+            message: message,
+            context: context,
+            type: "coding_assistant",
+            instructions: `You are "Ask Doubt", a friendly AI coding assistant for CodeQuest platform. 
+            Help users with:
+            - Coding questions and debugging
+            - Programming concepts explanation
+            - Code review and optimization
+            - Learning guidance
+            
+            Keep responses helpful, encouraging, and focused on coding/programming topics.
+            Use emojis occasionally to make responses friendly.
+            If asked about non-coding topics, gently redirect to programming help.`
+        };
+
+        console.log('📤 Payload prepared for Worqhat API');
+
+        const response = await axios.post(WORQHAT_CHAT_API_URL, payload, {
+            headers: {
+                'Authorization': 'Bearer ' + WORQHAT_API_KEY,
+                'Content-Type': 'application/json'
+            },
+            timeout: 15000 // 15 second timeout
+        });
+
+        console.log('✅ Received response from Worqhat API');
+        
+        // Extract the response from Worqhat API
+        let aiResponse = '';
+        if (response.data && response.data.response) {
+            aiResponse = response.data.response;
+        } else if (response.data && response.data.message) {
+            aiResponse = response.data.message;
+        } else if (response.data && typeof response.data === 'string') {
+            aiResponse = response.data;
+        } else {
+            aiResponse = "I understand you're looking for help with coding! Could you please be more specific about what you'd like assistance with? 🤔";
+        }
+
+        return {
+            success: true,
+            response: aiResponse,
+            source: 'worqhat_api'
+        };
+
+    } catch (error) {
+        console.error('❌ Worqhat API Error:', error.response?.data || error.message);
+        
+        // Fallback response based on error type
+        let fallbackResponse = '';
+        
+        if (error.code === 'ECONNABORTED' || error.message.includes('timeout')) {
+            fallbackResponse = "I'm taking a bit longer to process your request. Let me give you a quick response: Could you please rephrase your question? I'm here to help with coding problems! 💻";
+        } else if (error.response?.status === 401) {
+            fallbackResponse = "I'm experiencing some authentication issues right now. But I'm still here to help! Could you tell me what specific coding topic you'd like assistance with? 🔧";
+        } else if (error.response?.status >= 500) {
+            fallbackResponse = "My AI brain is having a brief moment! 🤖 While I recover, could you tell me what programming language or concept you're working with?";
+        } else {
+            // Try to provide a helpful response based on the message content
+            fallbackResponse = generateFallbackResponse(message);
+        }
+
+        return {
+            success: false,
+            response: fallbackResponse,
+            source: 'fallback',
+            error: error.message
+        };
+    }
+};
+
+// Fallback response generator for common coding questions
+const generateFallbackResponse = (message) => {
+    const lowerMessage = message.toLowerCase();
+    
+    if (lowerMessage.includes('python')) {
+        return "Python is a fantastic language to learn! 🐍 What specific Python concept would you like help with? Variables, functions, loops, or something else?";
+    }
+    
+    if (lowerMessage.includes('javascript')) {
+        return "JavaScript powers the web! 🌐 Are you working on DOM manipulation, promises, functions, or something else?";
+    }
+    
+    if (lowerMessage.includes('sql')) {
+        return "SQL helps you manage databases! 🗄️ Are you looking for help with SELECT statements, JOINs, or database design?";
+    }
+    
+    if (lowerMessage.includes('debug') || lowerMessage.includes('error')) {
+        return "Debugging can be tricky! 🔍 Could you share your code snippet and describe what error you're seeing? I'll help you track down the issue!";
+    }
+    
+    if (lowerMessage.includes('function')) {
+        return "Functions are the building blocks of programming! ⚡ What programming language are you working with, and what kind of function are you trying to create?";
+    }
+    
+    if (lowerMessage.includes('loop')) {
+        return "Loops help you repeat tasks efficiently! 🔄 Are you working with for loops, while loops, or having trouble with loop logic?";
+    }
+    
+    if (lowerMessage.includes('array') || lowerMessage.includes('list')) {
+        return "Arrays and lists are super useful for storing data! 📊 What would you like to do with your array? Sort, filter, or manipulate the data somehow?";
+    }
+    
+    return "I'm here to help with all your coding questions! 💡 Could you tell me more about what programming concept or problem you're working on? The more specific you can be, the better I can assist you!";
+};
+
+// --- CHATBOT ENDPOINT ---
+app.post('/api/chat', async (req, res) => {
+    console.log('=== CHAT REQUEST ===');
+    const { message, conversationHistory } = req.body;
+    
+    console.log('Message received:', message?.substring(0, 100) + '...');
+    console.log('Conversation history length:', conversationHistory?.length || 0);
+    
+    if (!message || message.trim().length === 0) {
+        console.log('❌ Empty message received');
+        return res.status(400).json({
+            success: false,
+            response: "Please enter a message! I'm here to help with your coding questions. 😊"
+        });
+    }
+
+    if (message.length > 2000) {
+        console.log('❌ Message too long');
+        return res.status(400).json({
+            success: false,
+            response: "Your message is a bit too long! Please try to keep it under 2000 characters. 📝"
+        });
+    }
+
+    try {
+        // Get response from Worqhat API
+        const aiResult = await getChatbotResponse(message, conversationHistory);
+        
+        // Save chat interaction to database (optional)
+        const db = readDB();
+        if (!db.chatHistory) {
+            db.chatHistory = [];
+        }
+        
+        db.chatHistory.push({
+            timestamp: new Date().toISOString(),
+            userMessage: message,
+            aiResponse: aiResult.response,
+            source: aiResult.source,
+            success: aiResult.success
+        });
+        
+        // Keep only last 100 chat interactions to prevent database bloat
+        if (db.chatHistory.length > 100) {
+            db.chatHistory = db.chatHistory.slice(-100);
+        }
+        
+        writeDB(db);
+        console.log('💾 Chat interaction saved to database');
+        
+        console.log('✅ Chat response sent successfully');
+        console.log('=== END CHAT REQUEST ===');
+        
+        res.json({
+            success: true,
+            response: aiResult.response,
+            source: aiResult.source
+        });
+
+    } catch (error) {
+        console.error('❌ Chat endpoint error:', error);
+        console.log('=== END CHAT REQUEST (ERROR) ===');
+        
+        res.status(500).json({
+            success: false,
+            response: "I'm having some technical difficulties right now! 😅 But don't worry - I'm still here to help! Could you try asking your coding question again?",
+            error: process.env.NODE_ENV === 'development' ? error.message : undefined
+        });
+    }
+});
+
+// --- EXISTING CODE CONTINUES (LEARNING PATHS, LESSONS, ETC.) ---
+
 // Helper function to call Worqhat API for code analysis
 const analyzeCodeWithWorqhat = async (userCode, language = 'javascript') => {
     try {
@@ -55,7 +249,7 @@ const analyzeCodeWithWorqhat = async (userCode, language = 'javascript') => {
             context: "This code is submitted as part of a coding challenge. Please provide constructive feedback, suggestions for improvement, and identify any issues."
         };
 
-        const response = await axios.post(WORQHAT_API_URL, payload, {
+        const response = await axios.post(WORQHAT_CHAT_API_URL, payload, {
             headers: {
                 'Authorization': 'Bearer ' + WORQHAT_API_KEY,
                 'Content-Type': 'application/json'
@@ -66,7 +260,7 @@ const analyzeCodeWithWorqhat = async (userCode, language = 'javascript') => {
         return {
             success: true,
             analysis: response.data,
-            feedback: response.data.feedback || response.data.message || 'Code analysis completed'
+            feedback: response.data.feedback || response.data.response || response.data.message || 'Code analysis completed'
         };
     } catch (error) {
         console.error('Worqhat API Error:', error.response?.data || error.message);
@@ -491,12 +685,26 @@ app.get('/register', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'register.html'));
 });
 
+// Serve chatbot.html
+app.get('/chatbot.html', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'chatbot.html'));
+});
+
 // DEBUG ENDPOINT - Remove in production
 app.get('/debug/riddles', (req, res) => {
     res.json({
         availableRiddles: Object.keys(riddleData),
         riddleData: riddleData,
         riddleCount: Object.keys(riddleData).length
+    });
+});
+
+// Chat history endpoint for debugging
+app.get('/debug/chat-history', (req, res) => {
+    const db = readDB();
+    res.json({
+        chatHistory: db.chatHistory || [],
+        totalChats: (db.chatHistory || []).length
     });
 });
 
@@ -515,7 +723,8 @@ app.use((req, res) => {
 // --- START SERVER ---
 app.listen(PORT, () => {
     console.log(`🚀 Server is running on http://localhost:${PORT}`);
-    console.log(`🤖 Worqhat AI integration enabled for code analysis`);
+    console.log(`🤖 Worqhat AI integration enabled for chatbot and code analysis`);
+    console.log(`💬 Chatbot endpoint: /api/chat`);
     console.log(`📚 Available riddles: ${Object.keys(riddleData).join(', ')}`);
     console.log(`📊 Total riddles loaded: ${Object.keys(riddleData).length}`);
     console.log(`📝 Available lessons: ${Object.keys(lessonData).join(', ')}`);

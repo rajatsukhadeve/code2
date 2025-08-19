@@ -18,10 +18,19 @@
     <header class="absolute top-0 left-0 right-0 z-20 bg-gray-900/20 backdrop-blur-sm">
         <div class="container mx-auto px-6 py-4 flex justify-between items-center">
             <h1 class="text-2xl font-bold gradient-text">CodeQuest</h1>
-            <nav id="auth-links">
-                <a href="/login.html" class="px-5 py-2.5 rounded-lg text-sm font-semibold text-white bg-gray-800/50 hover:bg-gray-700/50 transition">Login</a>
-                <a href="/register.html" class="px-5 py-2.5 rounded-lg text-sm font-semibold text-white btn-primary ml-2">Sign Up</a>
-            </nav>
+            <div class="flex items-center gap-3">
+                <!-- Ask Doubt Button -->
+                <button id="ask-doubt-btn" class="px-4 py-2.5 rounded-lg text-sm font-semibold text-white bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 transition-all hover:scale-105 focus:outline-none focus:ring-2 focus:ring-purple-400/50 shadow-lg">
+                    <span class="flex items-center gap-2">
+                        <span>🤖</span>
+                        <span>Ask Doubt</span>
+                    </span>
+                </button>
+                <nav id="auth-links">
+                    <a href="/login.html" class="px-5 py-2.5 rounded-lg text-sm font-semibold text-white bg-gray-800/50 hover:bg-gray-700/50 transition">Login</a>
+                    <a href="/register.html" class="px-5 py-2.5 rounded-lg text-sm font-semibold text-white btn-primary ml-2">Sign Up</a>
+                </nav>
+            </div>
         </div>
     </header>
 
@@ -53,6 +62,18 @@
                     <div class="flex items-center gap-2 text-gray-400">
                         <span class="text-sm">✨ Join 10,000+ adventurers</span>
                     </div>
+                </div>
+
+                <!-- Ask Doubt CTA in Hero -->
+                <div class="mt-8 p-4 bg-gradient-to-r from-purple-500/10 to-pink-500/10 rounded-xl border border-purple-400/20 max-w-md mx-auto">
+                    <div class="flex items-center justify-center gap-3 mb-2">
+                        <span class="text-2xl">🤖</span>
+                        <span class="font-semibold text-purple-300">Need Help?</span>
+                    </div>
+                    <p class="text-sm text-gray-300 mb-3">Get instant answers to your coding questions</p>
+                    <button id="hero-ask-doubt" class="w-full px-4 py-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-lg font-semibold hover:scale-105 transition-all">
+                        Ask Doubt AI Assistant
+                    </button>
                 </div>
 
                 <!-- Stats showcase -->
@@ -170,7 +191,7 @@
                 <!-- Features showcase -->
                 <div class="mt-20 text-center">
                     <h3 class="text-3xl font-bold text-white mb-12">Why Choose CodeQuest? 🤔</h3>
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-4xl mx-auto">
+                    <div class="grid grid-cols-1 md:grid-cols-4 gap-8 max-w-5xl mx-auto">
                         <div class="fade-in-section">
                             <div class="text-5xl mb-4">🎯</div>
                             <h4 class="text-xl font-bold text-white mb-2">Gamified Learning</h4>
@@ -185,6 +206,11 @@
                             <div class="text-5xl mb-4">📊</div>
                             <h4 class="text-xl font-bold text-white mb-2">Track Progress</h4>
                             <p class="text-gray-400">Monitor your streak, level up, and see your skills grow over time.</p>
+                        </div>
+                        <div class="fade-in-section">
+                            <div class="text-5xl mb-4">🤖</div>
+                            <h4 class="text-xl font-bold text-white mb-2">AI Assistant</h4>
+                            <p class="text-gray-400">Get instant help with our Ask Doubt AI assistant for all your coding questions!</p>
                         </div>
                     </div>
                 </div>
@@ -213,9 +239,38 @@
             }
         }
 
+        // Function to open Ask Doubt chatbot
+        function openChatbot() {
+            const chatWindow = window.open(
+                '/chatbot.html',
+                'askDoubtChatbot',
+                'width=800,height=700,scrollbars=yes,resizable=yes,location=no,menubar=no,toolbar=no'
+            );
+            
+            if (chatWindow) {
+                chatWindow.focus();
+            } else {
+                // Fallback if popup is blocked
+                alert('Please allow popups for this site to use the Ask Doubt feature, or try opening it in a new tab.');
+                window.open('/chatbot.html', '_blank');
+            }
+        }
+
         // Initialize particles and fade-in sections
         document.addEventListener('DOMContentLoaded', () => {
             initParticles();
+            
+            // Add event listeners for Ask Doubt buttons
+            const askDoubtBtn = document.getElementById('ask-doubt-btn');
+            const heroAskDoubt = document.getElementById('hero-ask-doubt');
+            
+            if (askDoubtBtn) {
+                askDoubtBtn.addEventListener('click', openChatbot);
+            }
+            
+            if (heroAskDoubt) {
+                heroAskDoubt.addEventListener('click', openChatbot);
+            }
             
             // Intersection Observer for fade-in animations
             const observerOptions = {

@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ask Doubt - CodeQuest AI Assistant</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/style.css">
+    <style>
+        .chat-message {
+            animation: slideIn 0.3s ease-out;
+        }
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .typing-indicator {
+            animation: pulse 1.5s infinite;
+        }
+        .chat-container {
+            max-height: calc(100vh - 200px);
+        }
+        .message-bubble {
+            max-width: 80%;
+            word-wrap: break-word;
+        }
+        .user-message {
+            background: linear-gradient(135deg, #3b82f6, #1e40af);
+        }
+        .ai-message {
+            background: linear-gradient(135deg, #374151, #1f2937);
+        }
+        .chat-input:focus {
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+    </style>
+</head>
+<body class="antialiased bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900 min-h-screen">
+    
+    <!-- Header -->
+    <header class="bg-gray-900/80 backdrop-blur-sm border-b border-gray-700/50 sticky top-0 z-10">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-gradient-to-br from-blue-400 to-purple-500 rounded-full flex items-center justify-center">
+                    <span class="text-white font-bold text-lg">🤖</span>
+                </div>
+                <h1 class="text-2xl font-bold gradient-text">Ask Doubt</h1>
+                <span class="text-sm text-gray-400 bg-gray-800/50 px-3 py-1 rounded-full">AI Assistant</span>
+            </div>
+            <div class="flex items-center gap-4">
+                <button id="clear-chat" class="px-4 py-2 text-sm bg-gray-700/50 hover:bg-gray-700 text-gray-300 hover:text-white rounded-lg transition-all">
+                    🗑️ Clear Chat
+                </button>
+                <button onclick="window.close()" class="px-4 py-2 text-sm bg-red-600/20 hover:bg-red-600/40 text-red-400 hover:text-red-300 rounded-lg transition-all border border-red-500/20">
+                    ✕ Close
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Chat Container -->
+    <main class="container mx-auto px-6 py-6 flex flex-col h-screen">
+        
+        <!-- Welcome Message -->
+        <div id="welcome-section" class="mb-6">
+            <div class="glass-card p-6 rounded-xl bg-gradient-to-r from-blue-500/10 to-purple-500/10 border border-blue-500/20">
+                <div class="flex items-center gap-4 mb-4">
+                    <div class="w-16 h-16 bg-gradient-to-br from-blue-400 to-purple-500 rounded-full flex items-center justify-center">
+                        <span class="text-white font-bold text-2xl">🧠</span>
+                    </div>
+                    <div>
+                        <h2 class="text-2xl font-bold text-white mb-1">Welcome to Ask Doubt!</h2>
+                        <p class="text-blue-300">Your AI-powered coding assistant</p>
+                    </div>
+                </div>
+                <p class="text-gray-300 mb-4">
+                    I'm here to help you with coding questions, debug issues, explain concepts, and guide you through your programming journey. Ask me anything! 💡
+                </p>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-3">
+                    <button class="suggestion-btn text-left p-3 bg-gray-800/30 hover:bg-gray-800/50 rounded-lg border border-gray-600/30 hover:border-blue-400/50 transition-all">
+                        <div class="text-sm font-semibold text-blue-400">🐍 Python Question</div>
+                        <div class="text-xs text-gray-400">Explain list comprehensions</div>
+                    </button>
+                    <button class="suggestion-btn text-left p-3 bg-gray-800/30 hover:bg-gray-800/50 rounded-lg border border-gray-600/30 hover:border-blue-400/50 transition-all">
+                        <div class="text-sm font-semibold text-yellow-400">🌐 JavaScript Help</div>
+                        <div class="text-xs text-gray-400">How do promises work?</div>
+                    </button>
+                    <button class="suggestion-btn text-left p-3 bg-gray-800/30 hover:bg-gray-800/50 rounded-lg border border-gray-600/30 hover:border-blue-400/50 transition-all">
+                        <div class="text-sm font-semibold text-purple-400">🗄️ SQL Query</div>
+                        <div class="text-xs text-gray-400">JOIN vs UNION difference</div>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Chat Messages Container -->
+        <div id="chat-messages" class="flex-1 overflow-y-auto chat-container space-y-4 mb-6 pr-2">
+            <!-- Messages will be dynamically added here -->
+        </div>
+
+        <!-- Typing Indicator -->
+        <div id="typing-indicator" class="hidden mb-4">
+            <div class="flex items-start gap-3">
+                <div class="w-10 h-10 bg-gradient-to-br from-gray-600 to-gray-700 rounded-full flex items-center justify-center">
+                    <span class="text-white text-lg">🤖</span>
+                </div>
+                <div class="ai-message text-white px-4 py-3 rounded-2xl rounded-tl-md message-bubble">
+                    <div class="flex items-center gap-2 typing-indicator">
+                        <div class="w-2 h-2 bg-blue-400 rounded-full animate-bounce"></div>
+                        <div class="w-2 h-2 bg-blue-400 rounded-full animate-bounce" style="animation-delay: 0.1s;"></div>
+                        <div class="w-2 h-2 bg-blue-400 rounded-full animate-bounce" style="animation-delay: 0.2s;"></div>
+                        <span class="text-gray-300 text-sm ml-2">AI is thinking...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Chat Input -->
+        <div class="bg-gray-800/30 backdrop-blur-sm rounded-xl p-4 border border-gray-700/50">
+            <div class="flex items-end gap-4">
+                <div class="flex-1">
+                    <div class="relative">
+                        <textarea 
+                            id="chat-input" 
+                            placeholder="Ask me anything about coding... (Press Shift+Enter for new line, Enter to send)"
+                            class="chat-input w-full p-4 bg-gray-700/50 border border-gray-600/50 rounded-xl text-white placeholder-gray-400 resize-none focus:outline-none focus:border-blue-400/50 transition-all max-h-32"
+                            rows="1"
+                        ></textarea>
+                        <div class="absolute bottom-2 right-2 text-xs text-gray-500">
+                            <span id="char-count">0</span>/2000
+                        </div>
+                    </div>
+                </div>
+                <button 
+                    id="send-btn" 
+                    class="px-6 py-4 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 text-white rounded-xl font-semibold transition-all hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-400/50 disabled:opacity-50 disabled:cursor-not-allowed"
+                    disabled
+                >
+                    <span class="flex items-center gap-2">
+                        <span>Send</span>
+                        <span>📤</span>
+                    </span>
+                </button>
+            </div>
+            <div class="mt-3 flex items-center justify-between text-xs text-gray-500">
+                <div class="flex items-center gap-4">
+                    <span>💡 Tip: Be specific for better answers</span>
+                    <span class="hidden sm:inline">🚀 Include code for debugging help</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <div class="w-2 h-2 bg-green-400 rounded-full"></div>
+                    <span>AI Ready</span>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="assets/js/chatbot.js"></script>
+</body>
+</html>
