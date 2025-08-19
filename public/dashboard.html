@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Dashboard - CodeQuest</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body class="antialiased">
+    <!-- Notification container -->
+    <div id="notification-container" class="fixed top-4 right-4 z-50"></div>
+
+    <header class="sticky top-0 z-40 bg-gray-900/90 backdrop-blur-md border-b border-gray-700/50">
+        <div class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="/index.html" class="text-2xl font-bold gradient-text">CodeQuest</a>
+            <div class="flex items-center gap-4">
+                <div class="hidden sm:flex items-center gap-2 bg-gray-800/50 px-4 py-2 rounded-lg">
+                    <span class="text-yellow-400">💎</span>
+                    <span class="font-semibold text-white" id="header-gems">0</span>
+                </div>
+                <div class="hidden sm:flex items-center gap-2 bg-gray-800/50 px-4 py-2 rounded-lg">
+                    <span class="text-blue-400">⚡</span>
+                    <span class="font-semibold text-white" id="header-xp">0 XP</span>
+                </div>
+                <span class="font-semibold text-white" id="user-name-header">Loading...</span>
+                <img src="https://placehold.co/40x40/818cf8/white?text=A" id="user-avatar" class="w-10 h-10 rounded-full border-2 border-indigo-400 ring-2 ring-indigo-400/20" alt="User Avatar">
+            </div>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-6 py-12">
+        
+        <!-- Welcome section with enhanced styling -->
+        <section id="welcome-section" class="mb-12">
+            <div class="glass-card p-8 rounded-2xl bg-gradient-to-r from-indigo-500/10 to-purple-500/10 border border-indigo-500/20">
+                <h1 class="text-4xl md:text-5xl font-bold text-white mb-4">
+                    Welcome back, <span id="user-name-main" class="gradient-text">...</span>! 🎮
+                </h1>
+                <p class="text-xl text-gray-300 mb-6">Ready to continue your coding adventure? Let's level up together!</p>
+                
+                <!-- Quick stats -->
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div class="text-center p-4 bg-gray-800/30 rounded-lg hover:bg-gray-800/50 transition-colors">
+                        <div class="text-2xl font-bold text-blue-400" id="quick-level">1</div>
+                        <div class="text-sm text-gray-400">Level</div>
+                    </div>
+                    <div class="text-center p-4 bg-gray-800/30 rounded-lg hover:bg-gray-800/50 transition-colors">
+                        <div class="text-2xl font-bold text-purple-400" id="quick-xp">0</div>
+                        <div class="text-sm text-gray-400">Total XP</div>
+                    </div>
+                    <div class="text-center p-4 bg-gray-800/30 rounded-lg hover:bg-gray-800/50 transition-colors">
+                        <div class="text-2xl font-bold text-orange-400" id="quick-streak">0</div>
+                        <div class="text-sm text-gray-400">Day Streak</div>
+                    </div>
+                    <div class="text-center p-4 bg-gray-800/30 rounded-lg hover:bg-gray-800/50 transition-colors">
+                        <div class="text-2xl font-bold text-yellow-400" id="quick-gems">0</div>
+                        <div class="text-sm text-gray-400">Gems</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+
+            <div class="lg:col-span-2 space-y-8">
+                <!-- Enhanced current quest section -->
+                <section class="glass-card p-8 rounded-2xl interactive-card">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="w-12 h-12 bg-gradient-to-br from-sky-400 to-indigo-500 rounded-xl flex items-center justify-center">
+                            <span class="text-white font-bold text-xl">🎯</span>
+                        </div>
+                        <h2 class="text-2xl font-bold text-white">Your Current Quest</h2>
+                    </div>
+                    <div id="learning-path-container">
+                        <div class="flex items-center justify-center py-8">
+                            <div class="spinner"></div>
+                            <span class="ml-3 text-gray-400">Loading your adventure...</span>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Enhanced achievements section -->
+                <section class="glass-card p-8 rounded-2xl interactive-card">
+                    <div class="flex items-center justify-between mb-6">
+                        <div class="flex items-center gap-3">
+                            <div class="w-12 h-12 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-xl flex items-center justify-center">
+                                <span class="text-white font-bold text-xl">🏆</span>
+                            </div>
+                            <h2 class="text-2xl font-bold text-white">Achievements</h2>
+                        </div>
+                        <div class="text-sm text-gray-400" id="badge-count">0 earned</div>
+                    </div>
+                    <div id="badges-container" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                        <div class="flex items-center justify-center py-8 col-span-full">
+                            <div class="spinner"></div>
+                            <span class="ml-3 text-gray-400">Loading achievements...</span>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Enhanced quests section -->
+                <section class="glass-card p-8 rounded-2xl interactive-card">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="w-12 h-12 bg-gradient-to-br from-green-400 to-emerald-500 rounded-xl flex items-center justify-center">
+                            <span class="text-white font-bold text-xl">📝</span>
+                        </div>
+                        <h2 class="text-2xl font-bold text-white">Daily Quests</h2>
+                    </div>
+                    <div id="quests-container" class="space-y-4">
+                        <div class="flex items-center justify-center py-8">
+                            <div class="spinner"></div>
+                            <span class="ml-3 text-gray-400">Loading quests...</span>
+                        </div>
+                    </div>
+                </section>
+            </div>
+
+            <div class="space-y-8">
+                <!-- Enhanced progress section -->
+                <section class="glass-card p-8 rounded-2xl interactive-card">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="w-12 h-12 bg-gradient-to-br from-indigo-400 to-purple-500 rounded-xl flex items-center justify-center">
+                            <span class="text-white font-bold text-xl">📊</span>
+                        </div>
+                        <h2 class="text-2xl font-bold text-white">Your Progress</h2>
+                    </div>
+                    <div id="progress-container">
+                        <div class="flex items-center justify-center py-8">
+                            <div class="spinner"></div>
+                            <span class="ml-3 text-gray-400">Loading progress...</span>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Enhanced streak section -->
+                <section class="glass-card p-8 rounded-2xl interactive-card">
+                    <div class="flex items-center gap-3 mb-6">
+                        <div class="w-12 h-12 bg-gradient-to-br from-orange-400 to-red-500 rounded-xl flex items-center justify-center">
+                            <span class="text-white font-bold text-xl">🔥</span>
+                        </div>
+                        <h2 class="text-2xl font-bold text-white">Learning Streak</h2>
+                    </div>
+                    <div id="streak-container">
+                        <div class="flex items-center justify-center py-8">
+                            <div class="spinner"></div>
+                            <span class="ml-3 text-gray-400">Loading streak...</span>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Leaderboard teaser -->
+                <section class="glass-card p-8 rounded-2xl interactive-card bg-gradient-to-br from-purple-500/10 to-pink-500/10">
+                    <div class="text-center">
+                        <div class="text-5xl mb-4">🏅</div>
+                        <h3 class="text-xl font-bold text-white mb-2">Climb the Leaderboard!</h3>
+                        <p class="text-gray-400 text-sm mb-4">Compete with other adventurers and show your coding prowess!</p>
+                        <button class="px-6 py-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white rounded-lg font-semibold hover:scale-105 transition-transform">
+                            View Rankings
+                        </button>
+                    </div>
+                </section>
+            </div>
+
+        </div>
+
+        <!-- Achievement popup modal -->
+        <div id="achievement-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center z-50 hidden">
+            <div class="glass-card p-8 rounded-2xl max-w-md mx-4 text-center transform scale-90 transition-transform">
+                <div class="text-6xl mb-4">🎉</div>
+                <h3 class="text-2xl font-bold text-white mb-2">Achievement Unlocked!</h3>
+                <div id="achievement-content"></div>
+                <button id="close-achievement" class="mt-6 px-6 py-2 btn-primary rounded-lg font-semibold">
+                    Awesome!
+                </button>
+            </div>
+        </div>
+    </main>
+
+    <script src="assets/js/dashboard.js"></script>
+    
+    <script>
+        // Initialize enhanced dashboard features
+        document.addEventListener('DOMContentLoaded', () => {
+            // Achievement modal functionality
+            const modal = document.getElementById('achievement-modal');
+            const closeBtn = document.getElementById('close-achievement');
+            
+            closeBtn.addEventListener('click', () => {
+                modal.classList.add('hidden');
+            });
+
+            // Add some visual flair to cards on load
+            setTimeout(() => {
+                document.querySelectorAll('.interactive-card').forEach((card, index) => {
+                    card.style.animationDelay = `${index * 0.1}s`;
+                    card.classList.add('fade-in-section', 'is-visible');
+                });
+            }, 500);
+        });
+    </script>
+</body>
+</html>

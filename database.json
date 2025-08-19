@@ -1,0 +1,70 @@
+{
+    "users": [
+        {
+            "username": "testuser",
+            "password": "password123",
+            "progress": {
+                "xp": 1250,
+                "level": 2,
+                "xpToNextLevel": 2000,
+                "badges": [
+                    {
+                        "name": "Bug Squasher",
+                        "icon": "🐞",
+                        "description": "Solved 10 challenges in one session."
+                    }
+                ],
+                "dailyStreak": 1,
+                "gems": 50
+            }
+        },
+        {
+            "username": "rajat1234",
+            "password": "rajat12234",
+            "progress": {
+                "xp": 0,
+                "level": 1,
+                "xpToNextLevel": 500,
+                "badges": [],
+                "dailyStreak": 0,
+                "gems": 0
+            }
+        },
+        {
+            "username": "123456789",
+            "password": "123456798",
+            "progress": {
+                "xp": 0,
+                "level": 1,
+                "xpToNextLevel": 500,
+                "badges": [],
+                "dailyStreak": 0,
+                "gems": 0
+            }
+        },
+        {
+            "username": "prasad",
+            "password": "prasad",
+            "progress": {
+                "xp": 200,
+                "level": 2,
+                "xpToNextLevel": 750,
+                "badges": [],
+                "dailyStreak": 7,
+                "gems": 50
+            }
+        },
+        {
+            "username": "raj",
+            "password": "raj",
+            "progress": {
+                "xp": 100,
+                "level": 1,
+                "xpToNextLevel": 500,
+                "badges": [],
+                "dailyStreak": 1,
+                "gems": 10
+            }
+        }
+    ]
+}
