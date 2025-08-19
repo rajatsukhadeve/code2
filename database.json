@@ -46,13 +46,57 @@
             "username": "prasad",
             "password": "prasad",
             "progress": {
-                "xp": 400,
+                "xp": 550,
                 "level": 2,
                 "xpToNextLevel": 750,
                 "badges": [],
-                "dailyStreak": 9,
-                "gems": 70
-            }
+                "dailyStreak": 10,
+                "gems": 85
+            },
+            "codeSubmissions": [
+                {
+                    "riddleId": "js_palindrome",
+                    "code": "function isPalindrome(word) {\n    // Your code here\n    // Hint: Compare the word with its reverse\n    console.log(\"hlw\")\n    return false; // Replace this\n}",
+                    "isCorrect": false,
+                    "timestamp": "2025-08-19T04:09:32.367Z",
+                    "aiAnalysis": "Workflow 1923e305-a659-4a5d-ac7d-a1702094840f triggered successfully"
+                },
+                {
+                    "riddleId": "js_palindrome",
+                    "code": "function isPalindrome(word) {\n    // Your code here\n    // Hint: Compare the word with its reverse\n    console.log(\"Hellow\")\n    return false; // Replace this\n}",
+                    "isCorrect": false,
+                    "timestamp": "2025-08-19T04:19:26.354Z",
+                    "aiAnalysis": "Workflow 1923e305-a659-4a5d-ac7d-a1702094840f triggered successfully"
+                },
+                {
+                    "riddleId": "js_palindrome",
+                    "code": "function isPalindrome(word) {\n    // Your code here\n    // Hint: Compare the word with its reverse\n    console.log(\"HII\")\n    return false; // Replace this\n}",
+                    "isCorrect": false,
+                    "timestamp": "2025-08-19T04:26:14.703Z",
+                    "aiAnalysis": "Workflow 1923e305-a659-4a5d-ac7d-a1702094840f triggered successfully"
+                },
+                {
+                    "riddleId": "js_palindrome",
+                    "code": "function isPalindrome(word) {\n    // Your code here\n    // Hint: Compare the word with its reverse\n    console.log(\"HII\")\n    return false; // Replace this\n}",
+                    "isCorrect": false,
+                    "timestamp": "2025-08-19T04:27:30.608Z",
+                    "aiAnalysis": "Workflow 1923e305-a659-4a5d-ac7d-a1702094840f triggered successfully"
+                },
+                {
+                    "riddleId": "python_two_sum",
+                    "code": "def solve():\n    nums = [2, 7, 11, 15]\n    target = 9\n    \n    num_map = {}  # Dictionary to store numbers and their indices\n    for i, num in enumerate(nums):\n        complement = target - num\n        if complement in num_map:\n            return [num_map[complement], i]  # Return indices\n        num_map[num] = i  # Store the index of the current number\n    \n    return []  # If no solution found",
+                    "isCorrect": false,
+                    "timestamp": "2025-08-19T04:33:08.243Z",
+                    "aiAnalysis": "Workflow 1923e305-a659-4a5d-ac7d-a1702094840f triggered successfully"
+                },
+                {
+                    "riddleId": "js_palindrome",
+                    "code": "function isPalindrome(word) {\n    // Convert to string just in case\n    word = String(word);\n    \n    // Compare original with reversed\n    return word === word.split('').reverse().join('');\n}",
+                    "isCorrect": true,
+                    "timestamp": "2025-08-19T04:41:48.053Z",
+                    "aiAnalysis": "Workflow 1923e305-a659-4a5d-ac7d-a1702094840f triggered successfully"
+                }
+            ]
         },
         {
             "username": "raj",

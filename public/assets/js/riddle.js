@@ -11,18 +11,19 @@ document.addEventListener('DOMContentLoaded', () => {
     let attempts = 0;
     let riddleId = '';
 
+    console.log('Riddle page initialized'); // Debug log
+
     // Enhanced notification system
     function showNotification(message, type = 'success') {
-        const container = document.getElementById('notification-container');
+        let container = document.getElementById('notification-container');
         if (!container) {
             // Create container if it doesn't exist
-            const newContainer = document.createElement('div');
-            newContainer.id = 'notification-container';
-            newContainer.className = 'fixed top-4 right-4 z-50';
-            document.body.appendChild(newContainer);
+            container = document.createElement('div');
+            container.id = 'notification-container';
+            container.className = 'fixed top-4 right-4 z-50 space-y-2';
+            document.body.appendChild(container);
         }
         
-        const notificationContainer = document.getElementById('notification-container');
         const notification = document.createElement('div');
         notification.className = `notification ${type} show`;
         
@@ -40,23 +41,23 @@ document.addEventListener('DOMContentLoaded', () => {
             </div>
         `;
         
-        notificationContainer.appendChild(notification);
+        container.appendChild(notification);
         
         setTimeout(() => {
             notification.classList.remove('show');
             setTimeout(() => {
-                if (notificationContainer.contains(notification)) {
-                    notificationContainer.removeChild(notification);
+                if (container.contains(notification)) {
+                    container.removeChild(notification);
                 }
             }, 300);
-        }, type === 'ai' ? 6000 : 4000); // AI messages stay longer
+        }, type === 'ai' ? 6000 : 4000);
     }
 
     // Enhanced loading animation
     function showLoading(container, message = 'Loading...') {
         container.innerHTML = `
             <div class="flex items-center justify-center py-12">
-                <div class="spinner"></div>
+                <div class="w-8 h-8 border-4 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
                 <span class="ml-4 text-gray-400 text-lg">${message}</span>
             </div>
         `;
@@ -67,6 +68,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const user = JSON.parse(localStorage.getItem('codequestUser') || 'null');
         
         try {
+            console.log('Sending code for AI analysis:', { code: userCode, riddleId, username: user?.username });
+            
             const response = await fetch('/api/analyze-code', {
                 method: 'POST',
                 headers: {
@@ -79,7 +82,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 })
             });
 
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
             const result = await response.json();
+            console.log('AI analysis result:', result);
             return result;
             
         } catch (error) {
@@ -161,43 +169,61 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     async function fetchRiddle() {
+        console.log('fetchRiddle called');
         showLoading(riddleDescription, 'Loading your coding challenge...');
         
         try {
             const urlParams = new URLSearchParams(window.location.search);
             riddleId = urlParams.get('id');
-            if (!riddleId) throw new Error("No riddle ID provided in URL");
+            console.log('Riddle ID from URL:', riddleId);
+            
+            if (!riddleId) {
+                throw new Error("No riddle ID provided in URL");
+            }
 
+            console.log('Fetching riddle from:', `/api/riddle?id=${riddleId}`);
             const response = await fetch(`/api/riddle?id=${riddleId}`);
-            if (!response.ok) throw new Error('Riddle not found');
+            
+            if (!response.ok) {
+                const errorData = await response.text();
+                console.error('Server response:', errorData);
+                throw new Error(`Riddle not found (${response.status}): ${errorData}`);
+            }
             
             const riddle = await response.json();
+            console.log('Riddle loaded successfully:', riddle);
+            
             riddleData = riddle;
             solution = riddle.solution;
             originalScaffold = riddle.scaffold;
             renderRiddle(riddle);
 
         } catch (error) {
+            console.error('Error fetching riddle:', error);
             riddleDescription.innerHTML = `
                 <div class="text-center py-12">
                     <div class="text-6xl mb-4">🤷‍♂️</div>
                     <p class="text-red-400 font-bold text-xl mb-2">Challenge Not Found</p>
-                    <p class="text-gray-400 mb-4">We couldn't load this riddle. Please try again.</p>
-                    <button onclick="window.location.href='/dashboard.html'" class="px-6 py-3 btn-primary rounded-lg font-semibold">
+                    <p class="text-gray-400 mb-4">${error.message}</p>
+                    <div class="mb-4">
+                        <p class="text-sm text-gray-500">Riddle ID: ${riddleId || 'Not provided'}</p>
+                    </div>
+                    <button onclick="window.location.href='/dashboard.html'" class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold">
                         🏠 Back to Dashboard
                     </button>
                 </div>
             `;
-            console.error(error);
         }
     }
 
     function renderRiddle(riddle) {
+        console.log('Rendering riddle:', riddle.title);
+        
         setTimeout(() => {
             riddleDescription.innerHTML = `
                 <div class="space-y-6">
                     <div class="text-center mb-6">
-                        <h1 class="text-3xl font-bold gradient-text mb-4">${riddle.title}</h1>
+                        <h1 class="text-3xl font-bold bg-gradient-to-r from-blue-400 to-purple-600 bg-clip-text text-transparent mb-4">${riddle.title}</h1>
                         <div class="flex items-center justify-center gap-4">
                             <div class="inline-flex items-center gap-2 bg-purple-500/10 px-4 py-2 rounded-lg border border-purple-400/20">
                                 <span class="text-purple-400">🎯</span>
@@ -288,11 +314,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (codeEditor) {
                 codeEditor.value = riddle.scaffold;
                 updateLineNumbers();
-            }
-            
-            // Add syntax highlighting effect
-            if (codeEditor) {
-                codeEditor.classList.add('fade-in-section', 'is-visible');
+                console.log('Code editor initialized with scaffold');
             }
             
         }, 300);
@@ -300,10 +322,16 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Enhanced run code functionality with AI analysis
     if (runCodeBtn) {
+        console.log('Attaching event listener to run button');
         runCodeBtn.addEventListener('click', async () => {
+            console.log('Run button clicked');
+            
             const userCode = codeEditor ? codeEditor.value.trim() : '';
             const user = JSON.parse(localStorage.getItem('codequestUser') || 'null');
             attempts++;
+            
+            console.log('User code:', userCode);
+            console.log('Original scaffold:', originalScaffold);
             
             if (!userCode) {
                 showNotification('Please write some code first! 🤔', 'error');
@@ -333,9 +361,13 @@ document.addEventListener('DOMContentLoaded', () => {
             
             checkSolutionWithAI(userCode, user, localAnalysis, aiResult);
         });
+    } else {
+        console.error('Run button not found!');
     }
 
     function checkSolutionWithAI(userCode, user, localAnalysis, aiResult) {
+        console.log('Checking solution with AI result:', aiResult);
+        
         let outputMessage = '';
         let isSuccess = aiResult.isCorrect || false;
         
@@ -408,7 +440,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Reset button state
         if (runCodeBtn) {
             if (isSuccess) {
-                runCodeBtn.classList.add('btn-success');
+                runCodeBtn.classList.add('bg-green-600');
                 runCodeBtn.innerHTML = `
                     <span class="flex items-center justify-center gap-2">
                         <span>✅</span>
@@ -419,8 +451,8 @@ document.addEventListener('DOMContentLoaded', () => {
             } else {
                 runCodeBtn.innerHTML = `
                     <span class="flex items-center justify-center gap-2">
-                        <span>▶️</span>
-                        <span>Run Code</span>
+                        <span>🤖</span>
+                        <span>Run & Analyze Code</span>
                     </span>
                 `;
                 runCodeBtn.disabled = false;
@@ -464,11 +496,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 
                 // Reset run button
                 if (runCodeBtn) {
-                    runCodeBtn.classList.remove('btn-success');
+                    runCodeBtn.classList.remove('bg-green-600');
                     runCodeBtn.innerHTML = `
                         <span class="flex items-center justify-center gap-2">
-                            <span>▶️</span>
-                            <span>Run Code</span>
+                            <span>🤖</span>
+                            <span>Run & Analyze Code</span>
                         </span>
                     `;
                     runCodeBtn.disabled = false;
@@ -565,25 +597,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         }
         
-        // Ctrl+S or Cmd+S to save progress
-        if ((e.ctrlKey || e.metaKey) && e.key === 's') {
-            e.preventDefault();
-            const currentCode = codeEditor ? codeEditor.value : '';
-            if (currentCode) {
-                const saveData = {
-                    code: currentCode,
-                    timestamp: Date.now(),
-                    attempts: attempts
-                };
-                const urlParams = new URLSearchParams(window.location.search);
-                const currentRiddleId = urlParams.get('id');
-                if (currentRiddleId) {
-                    localStorage.setItem(`riddle_${currentRiddleId}_progress`, JSON.stringify(saveData));
-                    showNotification('Progress saved! 💾', 'info');
-                }
-            }
-        }
-        
         // Escape to go back
         if (e.key === 'Escape') {
             window.location.href = '/dashboard.html';
@@ -591,29 +604,9 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Initialize the riddle
+    console.log('Initializing riddle...');
     fetchRiddle();
     
     // Load auto-saved progress after riddle loads
     setTimeout(loadAutoSavedProgress, 2000);
-    
-    // Add visual enhancements
-    document.addEventListener('mousemove', (e) => {
-        const cards = document.querySelectorAll('.glass-card');
-        cards.forEach(card => {
-            const rect = card.getBoundingClientRect();
-            const x = e.clientX - rect.left;
-            const y = e.clientY - rect.top;
-            
-            if (x >= 0 && x <= rect.width && y >= 0 && y <= rect.height) {
-                const centerX = rect.width / 2;
-                const centerY = rect.height / 2;
-                const rotateX = (y - centerY) / 30;
-                const rotateY = (centerX - x) / 30;
-                
-                card.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
-            } else {
-                card.style.transform = '';
-            }
-        });
-    });
 });

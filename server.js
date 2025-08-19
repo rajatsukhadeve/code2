@@ -16,6 +16,12 @@ const WORQHAT_API_KEY = 'wh_mehdbcs4Y97ep40HOnJPW2YzcjsGhGHJUrdmatuCKt1';
 app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
+// Add logging middleware for debugging
+app.use((req, res, next) => {
+    console.log(`${new Date().toISOString()} - ${req.method} ${req.url}`);
+    next();
+});
+
 // --- DATABASE SETUP ---
 const dbPath = path.join(__dirname, 'database.json');
 
@@ -168,7 +174,7 @@ const lessonData = {
     }
 };
 
-// --- RIDDLE DATA (FIXED) ---
+// --- RIDDLE DATA (FIXED AND EXPANDED) ---
 const riddleData = {
     python_two_sum: {
         title: "The Riddle of Two Sums",
@@ -281,59 +287,71 @@ app.get('/api/quests', (req, res) => res.json(questData));
 // LESSON ENDPOINT
 app.get('/api/lesson', (req, res) => {
     const lessonId = req.query.id;
-    console.log('Lesson requested:', lessonId); // Debug log
+    console.log('Lesson requested:', lessonId);
     const selectedLesson = lessonData[lessonId];
     if (selectedLesson) {
         res.json(selectedLesson);
     } else {
-        console.log('Available lessons:', Object.keys(lessonData)); // Debug log
+        console.log('Available lessons:', Object.keys(lessonData));
         res.status(404).json({ error: "Lesson not found" });
     }
 });
 
-// RIDDLE ENDPOINT (FIXED)
+// RIDDLE ENDPOINT (FIXED WITH BETTER LOGGING)
 app.get('/api/riddle', (req, res) => {
     const riddleId = req.query.id;
-    console.log('Riddle requested:', riddleId); // Debug log
-    console.log('Available riddles:', Object.keys(riddleData)); // Debug log
+    console.log('=== RIDDLE REQUEST ===');
+    console.log('Riddle requested:', riddleId);
+    console.log('Available riddles:', Object.keys(riddleData));
+    console.log('Request query:', req.query);
     
     const selectedRiddle = riddleData[riddleId];
     if (selectedRiddle) {
-        console.log('Riddle found:', selectedRiddle.title); // Debug log
+        console.log('✅ Riddle found:', selectedRiddle.title);
+        console.log('Riddle language:', selectedRiddle.language);
         res.json(selectedRiddle);
     } else {
-        console.log('Riddle not found for ID:', riddleId); // Debug log
+        console.log('❌ Riddle not found for ID:', riddleId);
         res.status(404).json({ 
             error: "Riddle not found", 
             availableRiddles: Object.keys(riddleData),
             requestedId: riddleId 
         });
     }
+    console.log('=== END RIDDLE REQUEST ===');
 });
 
-// ANALYZE CODE ENDPOINT
+// ANALYZE CODE ENDPOINT (IMPROVED)
 app.post('/api/analyze-code', async (req, res) => {
+    console.log('=== CODE ANALYSIS REQUEST ===');
     const { code, riddleId, username } = req.body;
+    console.log('Code to analyze:', code?.substring(0, 100) + '...');
+    console.log('Riddle ID:', riddleId);
+    console.log('Username:', username);
     
     if (!code) {
+        console.log('❌ No code provided');
         return res.status(400).json({ success: false, message: "Code is required" });
     }
 
     const riddle = riddleData[riddleId];
-    const language = riddle?.language || 'javascript';
+    if (!riddle) {
+        console.log('❌ Riddle not found for analysis:', riddleId);
+        return res.status(404).json({ success: false, message: "Riddle not found" });
+    }
+    
+    const language = riddle.language || 'javascript';
+    console.log('Using language:', language);
 
     try {
         // Get AI analysis from Worqhat
+        console.log('🤖 Calling Worqhat API...');
         const analysis = await analyzeCodeWithWorqhat(code, language);
+        console.log('AI Analysis result:', analysis.success ? 'Success' : 'Failed');
         
-        // Check if code is correct (existing logic)
-        const cleanUserCode = code.replace(/\s+/g, ' ').trim().toLowerCase();
-        const cleanSolution = riddle?.solution ? riddle.solution.replace(/\s+/g, ' ').trim().toLowerCase() : '';
-        
-        // More flexible solution checking
-        const isCorrect = cleanUserCode.includes(cleanSolution) || 
-                         code.toLowerCase().includes(riddle?.solution?.toLowerCase() || '') ||
-                         checkSolutionLogic(code, riddle);
+        // Check if code is correct (enhanced logic)
+        const isCorrect = checkSolutionLogic(code, riddle);
+        console.log('Solution check result:', isCorrect);
         
         // Save code submission to database (optional)
         if (username) {
@@ -351,19 +369,25 @@ app.post('/api/analyze-code', async (req, res) => {
                     aiAnalysis: analysis.feedback
                 });
                 writeDB(db);
+                console.log('💾 Code submission saved to database');
             }
         }
 
-        res.json({
+        const result = {
             success: true,
             isCorrect,
             analysis: analysis.feedback,
             aiPowered: analysis.success,
-            hints: analysis.success ? null : riddle?.hint
-        });
+            hints: analysis.success ? null : riddle.hint
+        };
+        
+        console.log('✅ Analysis complete, sending response');
+        console.log('=== END CODE ANALYSIS REQUEST ===');
+        res.json(result);
 
     } catch (error) {
-        console.error('Code analysis error:', error);
+        console.error('❌ Code analysis error:', error);
+        console.log('=== END CODE ANALYSIS REQUEST (ERROR) ===');
         res.status(500).json({
             success: false,
             message: "Failed to analyze code",
@@ -372,32 +396,63 @@ app.post('/api/analyze-code', async (req, res) => {
     }
 });
 
-// Helper function to check solution logic more intelligently
+// IMPROVED Helper function to check solution logic
 function checkSolutionLogic(code, riddle) {
     if (!riddle) return false;
     
-    // Basic pattern matching for common solutions
+    console.log('Checking solution logic for:', riddle.title);
+    const cleanUserCode = code.replace(/\s+/g, ' ').trim().toLowerCase();
+    const cleanSolution = riddle.solution ? riddle.solution.replace(/\s+/g, ' ').trim().toLowerCase() : '';
+    
+    // First check: exact solution match
+    if (cleanUserCode.includes(cleanSolution)) {
+        console.log('✅ Exact solution match found');
+        return true;
+    }
+    
+    // Enhanced pattern matching for common solutions
     switch (riddle.language) {
         case 'javascript':
-            if (riddle.title.includes('palindrome')) {
-                return code.includes('reverse') && code.includes('split') && code.includes('join');
+            if (riddle.title.includes('palindrome') || riddle.title.includes('Mirrored Word')) {
+                const hasPalindromeLogic = code.includes('reverse') && code.includes('split') && code.includes('join');
+                console.log('Palindrome logic check:', hasPalindromeLogic);
+                return hasPalindromeLogic;
             }
-            if (riddle.title.includes('sum')) {
-                return code.includes('reduce') || (code.includes('for') && code.includes('+'));
+            if (riddle.title.includes('sum') || riddle.title.includes('Array Blueprint')) {
+                const hasSumLogic = code.includes('reduce') || (code.includes('for') && code.includes('+')) || code.includes('forEach');
+                console.log('Sum logic check:', hasSumLogic);
+                return hasSumLogic;
+            }
+            if (riddle.title.includes('reverse') || riddle.title.includes('String Reverser')) {
+                const hasReverseLogic = code.includes('reverse') && code.includes('split') && code.includes('join');
+                console.log('Reverse string logic check:', hasReverseLogic);
+                return hasReverseLogic;
             }
             break;
+            
         case 'python':
             if (riddle.title.includes('Two Sums')) {
-                return code.includes('[0, 1]') || code.includes('[0,1]');
+                const hasTwoSumLogic = code.includes('[0, 1]') || code.includes('[0,1]');
+                console.log('Two sums logic check:', hasTwoSumLogic);
+                return hasTwoSumLogic;
+            }
+            if (riddle.title.includes('fibonacci') || riddle.title.includes('Fibonacci')) {
+                const hasFibLogic = code.includes('for') && (code.includes('a, b =') || code.includes('a,b ='));
+                console.log('Fibonacci logic check:', hasFibLogic);
+                return hasFibLogic;
             }
             break;
+            
         case 'sql':
-            if (riddle.title.includes('filter')) {
-                return code.toLowerCase().includes('age > 30');
+            if (riddle.title.includes('filter') || riddle.title.includes("Scribe's Task")) {
+                const hasFilterLogic = code.toLowerCase().includes('age > 30');
+                console.log('SQL filter logic check:', hasFilterLogic);
+                return hasFilterLogic;
             }
             break;
     }
     
+    console.log('❌ No matching solution pattern found');
     return false;
 }
 
@@ -440,13 +495,29 @@ app.get('/register', (req, res) => {
 app.get('/debug/riddles', (req, res) => {
     res.json({
         availableRiddles: Object.keys(riddleData),
-        riddleData: riddleData
+        riddleData: riddleData,
+        riddleCount: Object.keys(riddleData).length
     });
+});
+
+// ERROR HANDLING MIDDLEWARE
+app.use((err, req, res, next) => {
+    console.error('Server error:', err);
+    res.status(500).json({ error: 'Internal server error', message: err.message });
+});
+
+// 404 HANDLER
+app.use((req, res) => {
+    console.log('404 - Route not found:', req.url);
+    res.status(404).json({ error: 'Route not found', url: req.url });
 });
 
 // --- START SERVER ---
 app.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}`);
-    console.log(`Worqhat AI integration enabled for code analysis`);
-    console.log(`Available riddles: ${Object.keys(riddleData).join(', ')}`);
+    console.log(`🚀 Server is running on http://localhost:${PORT}`);
+    console.log(`🤖 Worqhat AI integration enabled for code analysis`);
+    console.log(`📚 Available riddles: ${Object.keys(riddleData).join(', ')}`);
+    console.log(`📊 Total riddles loaded: ${Object.keys(riddleData).length}`);
+    console.log(`📝 Available lessons: ${Object.keys(lessonData).join(', ')}`);
+    console.log(`=== Server Ready ===`);
 });
