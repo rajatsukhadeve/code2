@@ -49,7 +49,11 @@ const learningPaths = {
             { name: "The Loop Labyrinth", completed: false },
             { name: "The Riddle of Two Sums", completed: false },
             { name: "The Object-Oriented Oracle", completed: false }
-        ]
+        ],
+        challenge: {
+            title: "The Daily Divisibility",
+            description: "Write a function to check if a number is divisible by both 3 and 5."
+        }
     },
     javascript: {
         title: "The JavaScript Jungle",
@@ -63,7 +67,11 @@ const learningPaths = {
             { name: "Mastering the DOM Tree", completed: false },
             { name: "The Asynchronous Abyss", completed: false },
             { name: "The Framework Frontier", completed: false }
-        ]
+        ],
+        challenge: {
+            title: "The Daily Anagram",
+            description: "Write a function to check if two words are anagrams of each other."
+        }
     },
     sql: {
         title: "The SQL Kingdom",
@@ -76,7 +84,11 @@ const learningPaths = {
             { name: "The JOINing of Tables", completed: false },
             { name: "The Aggregate Functions", completed: false },
             { name: "The Subquery Secrets", completed: false }
-        ]
+        ],
+        challenge: {
+            title: "The Daily Employee Count",
+            description: "Write a query to count the number of employees in each department."
+        }
     },
     datastructures: {
         title: "The Architect's Labyrinth",
@@ -89,7 +101,11 @@ const learningPaths = {
             { name: "The Stack of Plates", completed: false },
             { name: "The Queue for the Throne", completed: false },
             { name: "The Hash Table's Map", completed: false }
-        ]
+        ],
+        challenge: {
+            title: "The Daily Max Value",
+            description: "Write a function to find the maximum value in an array."
+        }
     }
 };
 
@@ -119,31 +135,37 @@ const riddleData = {
         title: "The Riddle of Two Sums",
         riddle: "Given a list of numbers `[2, 7, 11, 15]` and a target of `9`, complete the function `solve()` to return the indices of the two numbers that add up to the target.\n\nThe correct answer is `[0, 1]`.",
         scaffold: "def solve():\n  nums = [2, 7, 11, 15]\n  target = 9\n  # Your code goes here\n  \n  \n  return [] # Return the indices",
-        solution: "return [0, 1]"
+        solution: "return [0, 1]",
+        hint: "You can use a dictionary to store the numbers you've seen so far."
     },
     js_palindrome: {
         title: "The Mirrored Word",
         riddle: "A palindrome is a word that reads the same forwards and backwards. Complete the `isPalindrome` function to check if a given word is a palindrome. It should return `true` or `false`.\n\nExample: `isPalindrome('racecar')` should return `true`.",
         scaffold: "function isPalindrome(word) {\n  // Your code here\n\n\n  return word.split('').reverse().join('') === word;\n}",
-        solution: "return word.split('').reverse().join('') === word;"
+        solution: "return word.split('').reverse().join('') === word;",
+        hint: "You can reverse the string and compare it to the original."
     },
     sql_filter_users: {
         title: "The Royal Scribe's Task",
         riddle: "From the `Users` table, select all users who are older than 30. The table has columns `name` and `age`.\n\nComplete the query.",
         scaffold: "SELECT * FROM Users WHERE age > 30;",
-        solution: "age > 30"
+        solution: "age > 30",
+        hint: "Use the `WHERE` clause to filter the results."
     },
     ds_array_sum: {
         title: "The Array Blueprint",
         riddle: "Given an array of numbers, calculate the sum of all its elements.\n\nExample: `sum([1, 2, 3])` should return `6`.",
         scaffold: "function sum(arr) {\n  // Your code here\n\n\n  return 0;\n}",
-        solution: "return arr.reduce((a, b) => a + b, 0)"
+        solution: "return arr.reduce((a, b) => a + b, 0)",
+        hint: "You can use the `reduce` method to solve this problem."
     }
 };
 
 const leaderboardData = [
     { rank: 1, name: 'Alex Ryder', xp: 15240, avatar: 'A', rankColor: 'text-yellow-400', borderColor: 'border-yellow-400' },
-    { rank: 2, name: 'Ben Carter', xp: 14880, avatar: 'B', rankColor: 'text-gray-300', borderColor: 'border-gray-400' }
+    { rank: 2, name: 'Ben Carter', xp: 14880, avatar: 'B', rankColor: 'text-gray-300', borderColor: 'border-gray-400' },
+    { rank: 3, name: 'Chloe Davis', xp: 14510, avatar: 'C', rankColor: 'text-orange-400', borderColor: 'border-orange-400' },
+    { rank: 4, name: 'You', xp: 9120, avatar: 'Y', isCurrentUser: true }
 ];
 
 const questData = [
@@ -249,7 +271,7 @@ app.get('/register', (req, res) => {
 
 // Add any other specific page routes here, for example:
 // app.get('/dashboard', (req, res) => {
-//     res.sendFile(path.join(__dirname, 'public', 'dashboard.html'));
+//     res.sendFile(path.join(__dirname, 'public', 'dashboard.html'));
 // });
 
 

@@ -8,36 +8,38 @@ document.addEventListener('DOMContentLoaded', () => {
     let solution = '';
     let originalScaffold = '';
     let riddleData = null;
-
-document.addEventListener('DOMContentLoaded', () => {
-    const riddleDescription = document.getElementById('riddle-description');
-    const codeEditor = document.getElementById('code-editor');
-    const runCodeBtn = document.getElementById('run-code-btn');
-    const resetBtn = document.getElementById('reset-btn');
-    const outputText = document.getElementById('output-text');
-    const successCelebration = document.getElementById('success-celebration');
-    let solution = '';
-    let originalScaffold = '';
-    let riddleData = null;
     let attempts = 0;
 
     // Enhanced notification system
     function showNotification(message, type = 'success') {
         const container = document.getElementById('notification-container');
+        if (!container) {
+            // Create container if it doesn't exist
+            const newContainer = document.createElement('div');
+            newContainer.id = 'notification-container';
+            newContainer.className = 'fixed top-4 right-4 z-50';
+            document.body.appendChild(newContainer);
+        }
+        
+        const notificationContainer = document.getElementById('notification-container');
         const notification = document.createElement('div');
         notification.className = `notification ${type} show`;
         notification.innerHTML = `
-            <div class="flex items-center gap-3">
+            <div class="flex items-center gap-3 bg-gray-800/90 backdrop-blur-sm px-4 py-3 rounded-lg border border-gray-600 shadow-lg">
                 <span class="text-xl">${type === 'success' ? '🎉' : type === 'error' ? '❌' : '💡'}</span>
-                <span>${message}</span>
+                <span class="text-white">${message}</span>
             </div>
         `;
         
-        container.appendChild(notification);
+        notificationContainer.appendChild(notification);
         
         setTimeout(() => {
             notification.classList.remove('show');
-            setTimeout(() => container.removeChild(notification), 300);
+            setTimeout(() => {
+                if (notificationContainer.contains(notification)) {
+                    notificationContainer.removeChild(notification);
+                }
+            }, 300);
         }, 4000);
     }
 
@@ -168,48 +170,57 @@ document.addEventListener('DOMContentLoaded', () => {
             `;
             
             // Set up the code editor with scaffold
-            codeEditor.value = riddle.scaffold;
-            updateLineNumbers();
+            if (codeEditor) {
+                codeEditor.value = riddle.scaffold;
+                updateLineNumbers();
+            }
             
             // Add syntax highlighting effect
-            codeEditor.classList.add('fade-in-section', 'is-visible');
+            if (codeEditor) {
+                codeEditor.classList.add('fade-in-section', 'is-visible');
+            }
             
         }, 300);
     }
 
     // Enhanced run code functionality
-    runCodeBtn.addEventListener('click', () => {
-        const userCode = codeEditor.value.trim();
-        const user = JSON.parse(localStorage.getItem('codequestUser'));
-        attempts++;
-        
-        if (!userCode) {
-            showNotification('Please write some code first! 🤔', 'error');
-            return;
-        }
-        
-        // Add loading state
-        runCodeBtn.innerHTML = `
-            <span class="flex items-center justify-center gap-2">
-                <div class="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                <span>Running...</span>
-            </span>
-        `;
-        runCodeBtn.disabled = true;
-        
-        // Simulate code execution time
-        setTimeout(() => {
-            checkSolution(userCode, user);
-        }, 1500);
-    });
+    if (runCodeBtn) {
+        runCodeBtn.addEventListener('click', () => {
+            const userCode = codeEditor ? codeEditor.value.trim() : '';
+            const user = JSON.parse(localStorage.getItem('codequestUser') || 'null');
+            attempts++;
+            
+            if (!userCode) {
+                showNotification('Please write some code first! 🤔', 'error');
+                return;
+            }
+            
+            // Add loading state
+            runCodeBtn.innerHTML = `
+                <span class="flex items-center justify-center gap-2">
+                    <div class="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                    <span>Running...</span>
+                </span>
+            `;
+            runCodeBtn.disabled = true;
+            
+            // Simulate code execution time
+            setTimeout(() => {
+                checkSolution(userCode, user);
+            }, 1500);
+        });
+    }
 
     function checkSolution(userCode, user) {
         const analysis = analyzeCode(userCode);
         let outputMessage = '';
         let isSuccess = false;
         
-        // Check if solution is correct
-        if (userCode.includes(solution)) {
+        // Check if solution is correct (more flexible checking)
+        const cleanUserCode = userCode.replace(/\s+/g, ' ').trim();
+        const cleanSolution = solution.replace(/\s+/g, ' ').trim();
+        
+        if (cleanUserCode.includes(cleanSolution) || userCode.includes(solution)) {
             isSuccess = true;
             outputMessage = `🎉 SUCCESS! You solved the riddle perfectly!\n\n✨ Code Analysis:\n- Solution found: ✅\n- Code quality: ${analysis.complexity}\n- Lines written: ${analysis.lineCount}\n\n🏆 Rewards earned:\n+150 XP Bonus\n+15 Gems 💎\n\nProgress automatically saved!`;
             
@@ -233,62 +244,13 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         // Update output
-        outputText.textContent = outputMessage;
-        outputText.className = isSuccess ? 'text-emerald-400 font-mono text-sm' : 'text-orange-400 font-mono text-sm';
+        if (outputText) {
+            outputText.textContent = outputMessage;
+            outputText.className = isSuccess ? 'text-emerald-400 font-mono text-sm' : 'text-orange-400 font-mono text-sm';
+        }
         
         // Reset button state
-        runCodeBtn.innerHTML = `
-            <span class="flex items-center justify-center gap-2">
-                <span>▶️</span>
-                <span>Run Code</span>
-            </span>
-        `;
-        runCodeBtn.disabled = false;
-        
-        // Add button animation
-        if (isSuccess) {
-            runCodeBtn.classList.add('btn-success');
-            runCodeBtn.innerHTML = `
-                <span class="flex items-center justify-center gap-2">
-                    <span>✅</span>
-                    <span>Solved!</span>
-                </span>
-            `;
-            runCodeBtn.disabled = true;
-        }
-    }
-
-    function showSuccessCelebration() {
-        successCelebration.classList.remove('hidden');
-        successCelebration.style.opacity = '0';
-        successCelebration.style.transform = 'translateY(30px) scale(0.9)';
-        
-        setTimeout(() => {
-            successCelebration.style.opacity = '1';
-            successCelebration.style.transform = 'translateY(0) scale(1)';
-            successCelebration.style.transition = 'all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
-        }, 500);
-        
-        // Scroll to celebration
-        setTimeout(() => {
-            successCelebration.scrollIntoView({ 
-                behavior: 'smooth',
-                block: 'center'
-            });
-        }, 800);
-    }
-
-    // Reset functionality
-    resetBtn.addEventListener('click', () => {
-        if (originalScaffold) {
-            codeEditor.value = originalScaffold;
-            updateLineNumbers();
-            outputText.textContent = '';
-            outputText.className = 'text-gray-300 whitespace-pre-wrap text-sm font-mono';
-            attempts = 0;
-            
-            // Reset run button
-            runCodeBtn.classList.remove('btn-success');
+        if (runCodeBtn) {
             runCodeBtn.innerHTML = `
                 <span class="flex items-center justify-center gap-2">
                     <span>▶️</span>
@@ -297,10 +259,73 @@ document.addEventListener('DOMContentLoaded', () => {
             `;
             runCodeBtn.disabled = false;
             
-            successCelebration.classList.add('hidden');
-            showNotification('Code reset to original template! 🔄', 'info');
+            // Add button animation
+            if (isSuccess) {
+                runCodeBtn.classList.add('btn-success');
+                runCodeBtn.innerHTML = `
+                    <span class="flex items-center justify-center gap-2">
+                        <span>✅</span>
+                        <span>Solved!</span>
+                    </span>
+                `;
+                runCodeBtn.disabled = true;
+            }
         }
-    });
+    }
+
+    function showSuccessCelebration() {
+        if (successCelebration) {
+            successCelebration.classList.remove('hidden');
+            successCelebration.style.opacity = '0';
+            successCelebration.style.transform = 'translateY(30px) scale(0.9)';
+            
+            setTimeout(() => {
+                successCelebration.style.opacity = '1';
+                successCelebration.style.transform = 'translateY(0) scale(1)';
+                successCelebration.style.transition = 'all 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94)';
+            }, 500);
+            
+            // Scroll to celebration
+            setTimeout(() => {
+                successCelebration.scrollIntoView({ 
+                    behavior: 'smooth',
+                    block: 'center'
+                });
+            }, 800);
+        }
+    }
+
+    // Reset functionality
+    if (resetBtn) {
+        resetBtn.addEventListener('click', () => {
+            if (originalScaffold && codeEditor) {
+                codeEditor.value = originalScaffold;
+                updateLineNumbers();
+                if (outputText) {
+                    outputText.textContent = '';
+                    outputText.className = 'text-gray-300 whitespace-pre-wrap text-sm font-mono';
+                }
+                attempts = 0;
+                
+                // Reset run button
+                if (runCodeBtn) {
+                    runCodeBtn.classList.remove('btn-success');
+                    runCodeBtn.innerHTML = `
+                        <span class="flex items-center justify-center gap-2">
+                            <span>▶️</span>
+                            <span>Run Code</span>
+                        </span>
+                    `;
+                    runCodeBtn.disabled = false;
+                }
+                
+                if (successCelebration) {
+                    successCelebration.classList.add('hidden');
+                }
+                showNotification('Code reset to original template! 🔄', 'info');
+            }
+        });
+    }
 
     // Enhanced line numbers functionality
     function updateLineNumbers() {
@@ -315,25 +340,27 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Auto-save functionality
     let autoSaveTimeout;
-    codeEditor.addEventListener('input', () => {
-        updateLineNumbers();
-        
-        // Auto-save to localStorage
-        clearTimeout(autoSaveTimeout);
-        autoSaveTimeout = setTimeout(() => {
-            const urlParams = new URLSearchParams(window.location.search);
-            const riddleId = urlParams.get('id');
-            if (riddleId) {
-                localStorage.setItem(`riddle_${riddleId}_progress`, codeEditor.value);
-            }
-        }, 1000);
-    });
+    if (codeEditor) {
+        codeEditor.addEventListener('input', () => {
+            updateLineNumbers();
+            
+            // Auto-save to localStorage
+            clearTimeout(autoSaveTimeout);
+            autoSaveTimeout = setTimeout(() => {
+                const urlParams = new URLSearchParams(window.location.search);
+                const riddleId = urlParams.get('id');
+                if (riddleId) {
+                    localStorage.setItem(`riddle_${riddleId}_progress`, codeEditor.value);
+                }
+            }, 1000);
+        });
+    }
 
     // Load auto-saved progress
     function loadAutoSavedProgress() {
         const urlParams = new URLSearchParams(window.location.search);
         const riddleId = urlParams.get('id');
-        if (riddleId) {
+        if (riddleId && codeEditor) {
             const saved = localStorage.getItem(`riddle_${riddleId}_progress`);
             if (saved && saved !== originalScaffold) {
                 setTimeout(() => {
@@ -353,7 +380,7 @@ document.addEventListener('DOMContentLoaded', () => {
         // Ctrl+Enter or Cmd+Enter to run code
         if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
             e.preventDefault();
-            if (!runCodeBtn.disabled) {
+            if (runCodeBtn && !runCodeBtn.disabled) {
                 runCodeBtn.click();
             }
         }
@@ -361,7 +388,9 @@ document.addEventListener('DOMContentLoaded', () => {
         // Ctrl+R or Cmd+R to reset (prevent page reload)
         if ((e.ctrlKey || e.metaKey) && e.key === 'r') {
             e.preventDefault();
-            resetBtn.click();
+            if (resetBtn) {
+                resetBtn.click();
+            }
         }
         
         // Escape to go back
