@@ -46,12 +46,12 @@
             "username": "prasad",
             "password": "prasad",
             "progress": {
-                "xp": 550,
-                "level": 2,
-                "xpToNextLevel": 750,
+                "xp": 400,
+                "level": 3,
+                "xpToNextLevel": 1125,
                 "badges": [],
-                "dailyStreak": 10,
-                "gems": 85
+                "dailyStreak": 14,
+                "gems": 145
             },
             "codeSubmissions": [
                 {
@@ -95,6 +95,34 @@
                     "isCorrect": true,
                     "timestamp": "2025-08-19T04:41:48.053Z",
                     "aiAnalysis": "Workflow 1923e305-a659-4a5d-ac7d-a1702094840f triggered successfully"
+                },
+                {
+                    "riddleId": "python_two_sum",
+                    "code": "def solve():\n    nums = [2, 7, 11, 15]\n    target = 9\n    # Your code goes here\n    # Hint: Use a dictionary to store numbers you've seen\n    \n    return [0,1]  # Return the indices",
+                    "isCorrect": true,
+                    "timestamp": "2025-08-19T05:13:51.254Z",
+                    "aiAnalysis": "Workflow 1923e305-a659-4a5d-ac7d-a1702094840f triggered successfully"
+                },
+                {
+                    "riddleId": "python_two_sum",
+                    "code": "def solve():\n    nums = [2, 7, 11, 15]\n    target = 9\n    # Your code goes here\n    # Hint: Use a dictionary to store numbers you've seen\n    \n    return [0,1]  # Return the indices",
+                    "isCorrect": true,
+                    "timestamp": "2025-08-19T05:17:03.273Z",
+                    "aiAnalysis": "Workflow 1923e305-a659-4a5d-ac7d-a1702094840f triggered successfully"
+                },
+                {
+                    "riddleId": "js_palindrome",
+                    "code": "function isPalindrome(word) {\n    // Convert to lowercase for case-insensitive comparison\n    word = word.toLowerCase();\n\n    // Compare the word with its reverse\n    return word === word.split('').reverse().join('');\n}",
+                    "isCorrect": true,
+                    "timestamp": "2025-08-19T15:56:10.715Z",
+                    "aiAnalysis": "Workflow 1923e305-a659-4a5d-ac7d-a1702094840f triggered successfully"
+                },
+                {
+                    "riddleId": "python_two_sum",
+                    "code": "def solve():\n    nums = [2, 7, 11, 15]\n    target = 9\n    # Your code goes here\n    # Hint: Use a dictionary to store numbers you've seen\n    \n    return [0,1]  # Return the indices",
+                    "isCorrect": true,
+                    "timestamp": "2025-08-19T15:57:49.437Z",
+                    "aiAnalysis": "Workflow 1923e305-a659-4a5d-ac7d-a1702094840f triggered successfully"
                 }
             ]
         },
@@ -121,6 +149,123 @@
                 "dailyStreak": 0,
                 "gems": 0
             }
+        },
+        {
+            "username": "krish",
+            "password": "krish12",
+            "progress": {
+                "xp": 450,
+                "level": 1,
+                "xpToNextLevel": 500,
+                "badges": [],
+                "dailyStreak": 3,
+                "gems": 45
+            },
+            "codeSubmissions": [
+                {
+                    "riddleId": "python_two_sum",
+                    "code": "def solve():\n    nums = [2, 7, 11, 15]\n    target = 9\n    # Your code goes here\n    # Hint: Use a dictionary to store numbers you've seen\n    \n    return [0,1]  # Return the indices",
+                    "isCorrect": true,
+                    "timestamp": "2025-08-19T06:02:45.188Z",
+                    "aiAnalysis": "Workflow 1923e305-a659-4a5d-ac7d-a1702094840f triggered successfully"
+                },
+                {
+                    "riddleId": "js_palindrome",
+                    "code": "function isPalindrome(word) {\n    // Convert word to lowercase to make it case-insensitive\n    let reversed = word.split('').reverse().join('');\n    return word === reversed;\n}",
+                    "isCorrect": true,
+                    "timestamp": "2025-08-19T07:08:12.131Z",
+                    "aiAnalysis": "Workflow 1923e305-a659-4a5d-ac7d-a1702094840f triggered successfully"
+                },
+                {
+                    "riddleId": "ds_array_sum",
+                    "code": "function sum(arr) {\n    console.log(\"HI\");\n}",
+                    "isCorrect": false,
+                    "timestamp": "2025-08-19T07:51:16.656Z",
+                    "aiAnalysis": "Workflow 1923e305-a659-4a5d-ac7d-a1702094840f triggered successfully"
+                },
+                {
+                    "riddleId": "js_palindrome",
+                    "code": "function isPalindrome(word) {\n    concolse.log(\"hi\");\n    \n}",
+                    "isCorrect": false,
+                    "timestamp": "2025-08-19T08:02:46.233Z",
+                    "aiAnalysis": "Workflow 1923e305-a659-4a5d-ac7d-a1702094840f triggered successfully"
+                },
+                {
+                    "riddleId": "js_palindrome",
+                    "code": "function isPalindrome(word) {\n    // Convert to lowercase for case-insensitive comparison\n    word = word.toLowerCase();\n\n    // Compare the word with its reverse\n    return word === word.split('').reverse().join('');\n}",
+                    "isCorrect": true,
+                    "timestamp": "2025-08-19T08:05:09.592Z",
+                    "aiAnalysis": "Workflow 1923e305-a659-4a5d-ac7d-a1702094840f triggered successfully"
+                }
+            ]
+        },
+        {
+            "username": "hello",
+            "password": "hello12",
+            "progress": {
+                "xp": 0,
+                "level": 1,
+                "xpToNextLevel": 500,
+                "badges": [],
+                "dailyStreak": 0,
+                "gems": 0
+            }
+        },
+        {
+            "username": "abcd",
+            "password": "abcd12",
+            "progress": {
+                "xp": 300,
+                "level": 1,
+                "xpToNextLevel": 500,
+                "badges": [],
+                "dailyStreak": 2,
+                "gems": 30
+            },
+            "codeSubmissions": [
+                {
+                    "riddleId": "python_two_sum",
+                    "code": "def solve():\n    nums = [2, 7, 11, 15]\n    target = 9\n    # Your code goes here\n    # Hint: Use a dictionary to store numbers you've seen\n    \n    return [0,1]  # Return the indices",
+                    "isCorrect": true,
+                    "timestamp": "2025-08-19T08:39:14.674Z",
+                    "aiAnalysis": "Workflow 1923e305-a659-4a5d-ac7d-a1702094840f triggered successfully"
+                },
+                {
+                    "riddleId": "python_two_sum",
+                    "code": "def solve():\n    nums = [2, 7, 11, 15]\n    target = 9\n    # Your code goes here\n    # Hint: Use a dictionary to store numbers you've seen\n    \n    return [0,1]  # Return the indices",
+                    "isCorrect": true,
+                    "timestamp": "2025-08-19T08:39:43.690Z",
+                    "aiAnalysis": "Workflow 1923e305-a659-4a5d-ac7d-a1702094840f triggered successfully"
+                }
+            ]
+        },
+        {
+            "username": "abcde",
+            "password": "abcde12",
+            "progress": {
+                "xp": 300,
+                "level": 1,
+                "xpToNextLevel": 500,
+                "badges": [],
+                "dailyStreak": 2,
+                "gems": 30
+            },
+            "codeSubmissions": [
+                {
+                    "riddleId": "python_two_sum",
+                    "code": "def solve():\n    nums = [2, 7, 11, 15]\n    target = 9\n    # Your code goes here\n    # Hint: Use a dictionary to store numbers you've seen\n    \n    return [0,1]  # Return the indices",
+                    "isCorrect": true,
+                    "timestamp": "2025-08-19T09:20:18.791Z",
+                    "aiAnalysis": "Workflow 1923e305-a659-4a5d-ac7d-a1702094840f triggered successfully"
+                },
+                {
+                    "riddleId": "js_palindrome",
+                    "code": "function isPalindrome(word) {\n    // Convert to lowercase for case-insensitive comparison\n    word = word.toLowerCase();\n\n    // Compare the word with its reverse\n    return word === word.split('').reverse().join('');\n}",
+                    "isCorrect": true,
+                    "timestamp": "2025-08-19T09:22:38.290Z",
+                    "aiAnalysis": "Workflow 1923e305-a659-4a5d-ac7d-a1702094840f triggered successfully"
+                }
+            ]
         }
     ]
 }
