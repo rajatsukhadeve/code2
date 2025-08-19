@@ -9,6 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let originalScaffold = '';
     let riddleData = null;
     let attempts = 0;
+    let riddleId = '';
 
     // Enhanced notification system
     function showNotification(message, type = 'success') {
@@ -24,10 +25,18 @@ document.addEventListener('DOMContentLoaded', () => {
         const notificationContainer = document.getElementById('notification-container');
         const notification = document.createElement('div');
         notification.className = `notification ${type} show`;
+        
+        const icons = {
+            success: '🎉',
+            error: '❌',
+            info: '💡',
+            ai: '🤖'
+        };
+        
         notification.innerHTML = `
-            <div class="flex items-center gap-3 bg-gray-800/90 backdrop-blur-sm px-4 py-3 rounded-lg border border-gray-600 shadow-lg">
-                <span class="text-xl">${type === 'success' ? '🎉' : type === 'error' ? '❌' : '💡'}</span>
-                <span class="text-white">${message}</span>
+            <div class="flex items-center gap-3 bg-gray-800/90 backdrop-blur-sm px-4 py-3 rounded-lg border border-gray-600 shadow-lg max-w-sm">
+                <span class="text-xl">${icons[type] || '💡'}</span>
+                <span class="text-white text-sm">${message}</span>
             </div>
         `;
         
@@ -40,7 +49,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     notificationContainer.removeChild(notification);
                 }
             }, 300);
-        }, 4000);
+        }, type === 'ai' ? 6000 : 4000); // AI messages stay longer
     }
 
     // Enhanced loading animation
@@ -53,16 +62,64 @@ document.addEventListener('DOMContentLoaded', () => {
         `;
     }
 
-    // Enhanced code analysis
-    function analyzeCode(userCode) {
+    // Enhanced code analysis with AI
+    async function analyzeCodeWithAI(userCode) {
+        const user = JSON.parse(localStorage.getItem('codequestUser') || 'null');
+        
+        try {
+            const response = await fetch('/api/analyze-code', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    code: userCode,
+                    riddleId: riddleId,
+                    username: user?.username
+                })
+            });
+
+            const result = await response.json();
+            return result;
+            
+        } catch (error) {
+            console.error('AI Analysis Error:', error);
+            return {
+                success: false,
+                isCorrect: false,
+                analysis: 'Unable to get AI feedback. Please check your code manually.',
+                aiPowered: false
+            };
+        }
+    }
+
+    // Enhanced local code analysis (fallback)
+    function analyzeCodeLocally(userCode) {
         const analysis = {
             hasReturn: userCode.includes('return'),
             hasFunction: userCode.includes('function') || userCode.includes('def '),
+            hasLoop: userCode.includes('for') || userCode.includes('while'),
+            hasConditional: userCode.includes('if') || userCode.includes('else'),
             lineCount: userCode.split('\n').filter(line => line.trim()).length,
-            complexity: 'simple'
+            complexity: 'simple',
+            issues: []
         };
 
-        if (userCode.includes('for') || userCode.includes('while')) {
+        // Basic code quality checks
+        if (!analysis.hasReturn && riddleData?.language !== 'sql') {
+            analysis.issues.push('Missing return statement');
+        }
+
+        if (userCode.includes('console.log') && riddleData?.language === 'javascript') {
+            analysis.issues.push('Consider removing debug console.log statements');
+        }
+
+        if (userCode.includes('print') && riddleData?.language === 'python') {
+            analysis.issues.push('Consider removing debug print statements');
+        }
+
+        // Determine complexity
+        if (analysis.hasLoop || analysis.hasConditional) {
             analysis.complexity = 'intermediate';
         }
         if (userCode.includes('recursion') || userCode.match(/function.*function/)) {
@@ -72,18 +129,35 @@ document.addEventListener('DOMContentLoaded', () => {
         return analysis;
     }
 
-    // Enhanced hint system
-    function getHint(attempt) {
-        const hints = [
-            "💡 Think about the problem step by step. What's the first thing you need to do?",
-            "🤔 Check your return statement - are you returning the right value?",
-            "🔍 Look at the example carefully. What pattern do you see?",
-            "💪 You're getting closer! Double-check your logic.",
-            "🎯 Almost there! Review the expected output format."
+    // Enhanced hint system with more variety
+    function getContextualHint(attempt, localAnalysis, isAI = false) {
+        const baseHints = [
+            "💡 Think about the problem step by step. What's the expected output?",
+            "🔍 Check your syntax - are all brackets and parentheses balanced?",
+            "🤔 Look at the example again. What pattern can you identify?",
+            "💪 You're making progress! Consider edge cases.",
+            "🎯 Almost there! Double-check your return value format."
         ];
-        
-        const hintIndex = Math.min(attempt - 1, hints.length - 1);
-        return hints[hintIndex];
+
+        const contextualHints = [];
+
+        // Add specific hints based on code analysis
+        if (localAnalysis && !localAnalysis.hasReturn && riddleData?.language !== 'sql') {
+            contextualHints.push("🔧 Don't forget to add a return statement!");
+        }
+
+        if (localAnalysis && localAnalysis.issues.length > 0) {
+            contextualHints.push(`⚠️ Code issue detected: ${localAnalysis.issues[0]}`);
+        }
+
+        if (isAI) {
+            contextualHints.unshift("🤖 AI is analyzing your code for personalized feedback...");
+        }
+
+        // Select appropriate hint
+        const allHints = [...contextualHints, ...baseHints];
+        const hintIndex = Math.min(attempt - 1, allHints.length - 1);
+        return allHints[hintIndex] || baseHints[baseHints.length - 1];
     }
 
     async function fetchRiddle() {
@@ -91,7 +165,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
         try {
             const urlParams = new URLSearchParams(window.location.search);
-            const riddleId = urlParams.get('id');
+            riddleId = urlParams.get('id');
             if (!riddleId) throw new Error("No riddle ID provided in URL");
 
             const response = await fetch(`/api/riddle?id=${riddleId}`);
@@ -124,9 +198,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 <div class="space-y-6">
                     <div class="text-center mb-6">
                         <h1 class="text-3xl font-bold gradient-text mb-4">${riddle.title}</h1>
-                        <div class="inline-flex items-center gap-2 bg-purple-500/10 px-4 py-2 rounded-lg border border-purple-400/20">
-                            <span class="text-purple-400">🎯</span>
-                            <span class="text-sm font-semibold text-purple-300">Coding Challenge</span>
+                        <div class="flex items-center justify-center gap-4">
+                            <div class="inline-flex items-center gap-2 bg-purple-500/10 px-4 py-2 rounded-lg border border-purple-400/20">
+                                <span class="text-purple-400">🎯</span>
+                                <span class="text-sm font-semibold text-purple-300">Coding Challenge</span>
+                            </div>
+                            <div class="inline-flex items-center gap-2 bg-blue-500/10 px-4 py-2 rounded-lg border border-blue-400/20">
+                                <span class="text-blue-400">🤖</span>
+                                <span class="text-sm font-semibold text-blue-300">AI-Powered Feedback</span>
+                            </div>
                         </div>
                     </div>
                     
@@ -151,18 +231,53 @@ document.addEventListener('DOMContentLoaded', () => {
                                     <span class="text-gray-400">Gems:</span>
                                     <span class="text-yellow-400 font-bold">+15 💎</span>
                                 </div>
+                                <div class="flex justify-between">
+                                    <span class="text-gray-400">AI Analysis:</span>
+                                    <span class="text-blue-400 font-bold">✨ Included</span>
+                                </div>
                             </div>
                         </div>
                         
                         <div class="bg-blue-500/10 p-4 rounded-lg border border-blue-400/20">
                             <h4 class="font-bold text-blue-400 mb-2 flex items-center gap-2">
-                                📊 Difficulty
+                                📊 Challenge Info
                             </h4>
-                            <div class="flex items-center gap-2">
-                                <div class="flex space-x-1">
-                                    ${[1,2,3,4,5].map(i => `<div class="w-2 h-2 rounded-full ${i <= 3 ? 'bg-blue-400' : 'bg-gray-600'}"></div>`).join('')}
+                            <div class="space-y-2">
+                                <div class="flex items-center justify-between">
+                                    <span class="text-sm text-gray-400">Language:</span>
+                                    <span class="text-sm text-blue-300 font-semibold uppercase">${riddle.language || 'JavaScript'}</span>
                                 </div>
-                                <span class="text-sm text-gray-400">Intermediate</span>
+                                <div class="flex items-center gap-2">
+                                    <span class="text-sm text-gray-400">Difficulty:</span>
+                                    <div class="flex space-x-1">
+                                        ${[1,2,3,4,5].map(i => `<div class="w-2 h-2 rounded-full ${i <= 3 ? 'bg-blue-400' : 'bg-gray-600'}"></div>`).join('')}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- New AI Analysis Section -->
+                    <div class="bg-gradient-to-r from-cyan-500/10 to-blue-500/10 p-6 rounded-xl border border-cyan-400/20">
+                        <h3 class="font-bold text-cyan-400 mb-3 flex items-center gap-2">
+                            🤖 AI-Powered Features
+                        </h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                            <div class="flex items-start gap-2">
+                                <span class="text-cyan-400 mt-1">•</span>
+                                <span class="text-gray-300">Intelligent code review and suggestions</span>
+                            </div>
+                            <div class="flex items-start gap-2">
+                                <span class="text-cyan-400 mt-1">•</span>
+                                <span class="text-gray-300">Personalized feedback based on your code</span>
+                            </div>
+                            <div class="flex items-start gap-2">
+                                <span class="text-cyan-400 mt-1">•</span>
+                                <span class="text-gray-300">Code quality analysis and best practices</span>
+                            </div>
+                            <div class="flex items-start gap-2">
+                                <span class="text-cyan-400 mt-1">•</span>
+                                <span class="text-gray-300">Detailed explanations for improvements</span>
                             </div>
                         </div>
                     </div>
@@ -183,9 +298,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 300);
     }
 
-    // Enhanced run code functionality
+    // Enhanced run code functionality with AI analysis
     if (runCodeBtn) {
-        runCodeBtn.addEventListener('click', () => {
+        runCodeBtn.addEventListener('click', async () => {
             const userCode = codeEditor ? codeEditor.value.trim() : '';
             const user = JSON.parse(localStorage.getItem('codequestUser') || 'null');
             attempts++;
@@ -194,35 +309,52 @@ document.addEventListener('DOMContentLoaded', () => {
                 showNotification('Please write some code first! 🤔', 'error');
                 return;
             }
+
+            if (userCode === originalScaffold) {
+                showNotification('Please modify the code template before submitting! ✏️', 'error');
+                return;
+            }
             
             // Add loading state
             runCodeBtn.innerHTML = `
                 <span class="flex items-center justify-center gap-2">
                     <div class="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                    <span>Running...</span>
+                    <span>Analyzing with AI...</span>
                 </span>
             `;
             runCodeBtn.disabled = true;
+
+            // Show AI analysis notification
+            showNotification('🤖 AI is analyzing your code...', 'ai');
             
-            // Simulate code execution time
-            setTimeout(() => {
-                checkSolution(userCode, user);
-            }, 1500);
+            // Perform both local and AI analysis
+            const localAnalysis = analyzeCodeLocally(userCode);
+            const aiResult = await analyzeCodeWithAI(userCode);
+            
+            checkSolutionWithAI(userCode, user, localAnalysis, aiResult);
         });
     }
 
-    function checkSolution(userCode, user) {
-        const analysis = analyzeCode(userCode);
+    function checkSolutionWithAI(userCode, user, localAnalysis, aiResult) {
         let outputMessage = '';
-        let isSuccess = false;
+        let isSuccess = aiResult.isCorrect || false;
         
-        // Check if solution is correct (more flexible checking)
-        const cleanUserCode = userCode.replace(/\s+/g, ' ').trim();
-        const cleanSolution = solution.replace(/\s+/g, ' ').trim();
-        
-        if (cleanUserCode.includes(cleanSolution) || userCode.includes(solution)) {
-            isSuccess = true;
-            outputMessage = `🎉 SUCCESS! You solved the riddle perfectly!\n\n✨ Code Analysis:\n- Solution found: ✅\n- Code quality: ${analysis.complexity}\n- Lines written: ${analysis.lineCount}\n\n🏆 Rewards earned:\n+150 XP Bonus\n+15 Gems 💎\n\nProgress automatically saved!`;
+        if (isSuccess) {
+            outputMessage = `🎉 SUCCESS! You solved the riddle perfectly!\n\n`;
+            
+            if (aiResult.aiPowered) {
+                outputMessage += `🤖 AI Analysis:\n${aiResult.analysis}\n\n`;
+            }
+            
+            outputMessage += `✨ Code Quality Assessment:\n`;
+            outputMessage += `- Solution correctness: ✅\n`;
+            outputMessage += `- Code complexity: ${localAnalysis.complexity}\n`;
+            outputMessage += `- Lines written: ${localAnalysis.lineCount}\n`;
+            
+            if (localAnalysis.hasFunction) outputMessage += `- Function structure: ✅\n`;
+            if (localAnalysis.hasReturn) outputMessage += `- Return statement: ✅\n`;
+            
+            outputMessage += `\n🏆 Rewards earned:\n+150 XP Bonus\n+15 Gems 💎\n\nProgress automatically saved!`;
             
             if (user) {
                 // Save progress
@@ -234,13 +366,37 @@ document.addEventListener('DOMContentLoaded', () => {
             }
             
             showSuccessCelebration();
-            showNotification('🎉 Riddle solved! Amazing work!', 'success');
+            showNotification('🎉 Riddle solved! AI analysis completed!', 'success');
             
         } else {
-            const hint = getHint(attempts);
-            outputMessage = `🤔 Not quite right yet. Keep trying!\n\n💡 Hint: ${hint}\n\n🔍 Code Analysis:\n- Has return statement: ${analysis.hasReturn ? '✅' : '❌'}\n- Function defined: ${analysis.hasFunction ? '✅' : '❌'}\n- Lines written: ${analysis.lineCount}\n\nAttempt #${attempts} - You're getting closer! 💪`;
+            const hint = getContextualHint(attempts, localAnalysis, aiResult.aiPowered);
             
-            showNotification(hint, 'info');
+            outputMessage = `🤔 Not quite right yet. Keep trying!\n\n`;
+            
+            if (aiResult.aiPowered && aiResult.analysis) {
+                outputMessage += `🤖 AI Feedback:\n${aiResult.analysis}\n\n`;
+                showNotification('🤖 Check the output for personalized AI feedback!', 'ai');
+            } else if (aiResult.hints) {
+                outputMessage += `💡 Hint: ${aiResult.hints}\n\n`;
+            } else {
+                outputMessage += `💡 Hint: ${hint}\n\n`;
+            }
+            
+            outputMessage += `🔍 Code Analysis:\n`;
+            outputMessage += `- Has return statement: ${localAnalysis.hasReturn ? '✅' : '❌'}\n`;
+            outputMessage += `- Function defined: ${localAnalysis.hasFunction ? '✅' : '❌'}\n`;
+            outputMessage += `- Code complexity: ${localAnalysis.complexity}\n`;
+            outputMessage += `- Lines written: ${localAnalysis.lineCount}\n`;
+            
+            if (localAnalysis.issues.length > 0) {
+                outputMessage += `- Issues found: ${localAnalysis.issues.join(', ')}\n`;
+            }
+            
+            outputMessage += `\nAttempt #${attempts} - You're getting closer! 💪`;
+            
+            if (!aiResult.aiPowered) {
+                showNotification('AI analysis unavailable - using local feedback', 'info');
+            }
         }
 
         // Update output
@@ -251,15 +407,6 @@ document.addEventListener('DOMContentLoaded', () => {
         
         // Reset button state
         if (runCodeBtn) {
-            runCodeBtn.innerHTML = `
-                <span class="flex items-center justify-center gap-2">
-                    <span>▶️</span>
-                    <span>Run Code</span>
-                </span>
-            `;
-            runCodeBtn.disabled = false;
-            
-            // Add button animation
             if (isSuccess) {
                 runCodeBtn.classList.add('btn-success');
                 runCodeBtn.innerHTML = `
@@ -269,6 +416,14 @@ document.addEventListener('DOMContentLoaded', () => {
                     </span>
                 `;
                 runCodeBtn.disabled = true;
+            } else {
+                runCodeBtn.innerHTML = `
+                    <span class="flex items-center justify-center gap-2">
+                        <span>▶️</span>
+                        <span>Run Code</span>
+                    </span>
+                `;
+                runCodeBtn.disabled = false;
             }
         }
     }
@@ -338,44 +493,61 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Auto-save functionality
+    // Auto-save functionality with AI context
     let autoSaveTimeout;
     if (codeEditor) {
         codeEditor.addEventListener('input', () => {
             updateLineNumbers();
             
-            // Auto-save to localStorage
+            // Auto-save to localStorage with timestamp
             clearTimeout(autoSaveTimeout);
             autoSaveTimeout = setTimeout(() => {
                 const urlParams = new URLSearchParams(window.location.search);
-                const riddleId = urlParams.get('id');
-                if (riddleId) {
-                    localStorage.setItem(`riddle_${riddleId}_progress`, codeEditor.value);
+                const currentRiddleId = urlParams.get('id');
+                if (currentRiddleId) {
+                    const saveData = {
+                        code: codeEditor.value,
+                        timestamp: Date.now(),
+                        attempts: attempts
+                    };
+                    localStorage.setItem(`riddle_${currentRiddleId}_progress`, JSON.stringify(saveData));
                 }
             }, 1000);
         });
     }
 
-    // Load auto-saved progress
+    // Load auto-saved progress with enhanced context
     function loadAutoSavedProgress() {
         const urlParams = new URLSearchParams(window.location.search);
-        const riddleId = urlParams.get('id');
-        if (riddleId && codeEditor) {
-            const saved = localStorage.getItem(`riddle_${riddleId}_progress`);
-            if (saved && saved !== originalScaffold) {
-                setTimeout(() => {
-                    const shouldRestore = confirm('🔄 We found your previous work on this riddle. Would you like to restore it?');
-                    if (shouldRestore) {
-                        codeEditor.value = saved;
-                        updateLineNumbers();
-                        showNotification('Previous work restored! 📂', 'info');
+        const currentRiddleId = urlParams.get('id');
+        if (currentRiddleId && codeEditor) {
+            const saved = localStorage.getItem(`riddle_${currentRiddleId}_progress`);
+            if (saved) {
+                try {
+                    const saveData = JSON.parse(saved);
+                    if (saveData.code && saveData.code !== originalScaffold) {
+                        const timeDiff = Date.now() - (saveData.timestamp || 0);
+                        const hoursAgo = Math.floor(timeDiff / (1000 * 60 * 60));
+                        
+                        setTimeout(() => {
+                            const timeText = hoursAgo > 0 ? `${hoursAgo} hours ago` : 'recently';
+                            const shouldRestore = confirm(`🔄 We found your previous work from ${timeText}. Would you like to restore it?\n\nPrevious attempts: ${saveData.attempts || 0}`);
+                            if (shouldRestore) {
+                                codeEditor.value = saveData.code;
+                                attempts = saveData.attempts || 0;
+                                updateLineNumbers();
+                                showNotification('Previous work restored! 📂', 'info');
+                            }
+                        }, 1000);
                     }
-                }, 1000);
+                } catch (e) {
+                    console.error('Error loading saved progress:', e);
+                }
             }
         }
     }
 
-    // Keyboard shortcuts
+    // Enhanced keyboard shortcuts
     document.addEventListener('keydown', (e) => {
         // Ctrl+Enter or Cmd+Enter to run code
         if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {
@@ -390,6 +562,25 @@ document.addEventListener('DOMContentLoaded', () => {
             e.preventDefault();
             if (resetBtn) {
                 resetBtn.click();
+            }
+        }
+        
+        // Ctrl+S or Cmd+S to save progress
+        if ((e.ctrlKey || e.metaKey) && e.key === 's') {
+            e.preventDefault();
+            const currentCode = codeEditor ? codeEditor.value : '';
+            if (currentCode) {
+                const saveData = {
+                    code: currentCode,
+                    timestamp: Date.now(),
+                    attempts: attempts
+                };
+                const urlParams = new URLSearchParams(window.location.search);
+                const currentRiddleId = urlParams.get('id');
+                if (currentRiddleId) {
+                    localStorage.setItem(`riddle_${currentRiddleId}_progress`, JSON.stringify(saveData));
+                    showNotification('Progress saved! 💾', 'info');
+                }
             }
         }
         

@@ -46,12 +46,12 @@
             "username": "prasad",
             "password": "prasad",
             "progress": {
-                "xp": 200,
+                "xp": 400,
                 "level": 2,
                 "xpToNextLevel": 750,
                 "badges": [],
-                "dailyStreak": 7,
-                "gems": 50
+                "dailyStreak": 9,
+                "gems": 70
             }
         },
         {
@@ -64,6 +64,18 @@
                 "badges": [],
                 "dailyStreak": 1,
                 "gems": 10
+            }
+        },
+        {
+            "username": "rajat12",
+            "password": "rajat12",
+            "progress": {
+                "xp": 0,
+                "level": 1,
+                "xpToNextLevel": 500,
+                "badges": [],
+                "dailyStreak": 0,
+                "gems": 0
             }
         }
     ]

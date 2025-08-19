@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Coding Riddle - CodeQuest</title>
+    <title>AI-Powered Coding Riddle - CodeQuest</title>
     
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -37,20 +37,47 @@
             padding: 16px 8px;
             user-select: none;
         }
+        .ai-badge {
+            background: linear-gradient(45deg, #06b6d4, #3b82f6);
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+        @keyframes glow {
+            from { box-shadow: 0 0 10px rgba(6, 182, 212, 0.5); }
+            to { box-shadow: 0 0 20px rgba(59, 130, 246, 0.8); }
+        }
+        .notification {
+            opacity: 0;
+            transform: translateX(100%);
+            transition: all 0.3s ease-in-out;
+        }
+        .notification.show {
+            opacity: 1;
+            transform: translateX(0);
+        }
+        .ai-thinking {
+            background: linear-gradient(45deg, #06b6d4, #3b82f6, #8b5cf6);
+            background-size: 300% 300%;
+            animation: gradient 2s ease infinite;
+        }
+        @keyframes gradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
     </style>
 </head>
 <body class="antialiased flex flex-col min-h-screen">
 
     <!-- Notification container -->
-    <div id="notification-container" class="fixed top-4 right-4 z-50"></div>
+    <div id="notification-container" class="fixed top-4 right-4 z-50 space-y-2"></div>
 
     <header class="bg-gray-900/90 backdrop-blur-md border-b border-gray-700/50 sticky top-0 z-40">
         <div class="container mx-auto px-6 py-4 flex justify-between items-center">
             <a href="/index.html" class="text-2xl font-bold gradient-text">CodeQuest</a>
             <div class="flex items-center gap-4">
                 <div class="hidden sm:flex items-center gap-2 bg-gray-800/50 px-3 py-2 rounded-lg">
-                    <span class="text-sm text-gray-400">Riddle Challenge</span>
-                    <span class="text-yellow-400">🧩</span>
+                    <span class="text-sm text-gray-400">AI-Powered Challenge</span>
+                    <span class="ai-badge text-white px-2 py-1 rounded text-xs font-bold">🤖 AI</span>
                 </div>
                 <a href="/dashboard.html" class="text-gray-300 hover:text-white transition font-semibold px-4 py-2 rounded-lg hover:bg-gray-800/50">
                     🏠 Dashboard
@@ -60,13 +87,16 @@
     </header>
 
     <main class="flex-grow container mx-auto px-6 py-8">
-        <!-- Challenge header -->
+        <!-- Challenge header with AI badge -->
         <div class="text-center mb-8">
-            <div class="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-full mb-4">
+            <div class="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-full mb-4 relative">
                 <span class="text-white font-bold text-2xl">🧩</span>
+                <div class="absolute -top-2 -right-2 ai-badge text-white px-2 py-1 rounded-full text-xs font-bold">
+                    AI
+                </div>
             </div>
-            <h1 class="text-3xl md:text-4xl font-bold gradient-text mb-2">Code Challenge</h1>
-            <p class="text-gray-400">Solve this riddle to earn bonus XP and gems!</p>
+            <h1 class="text-3xl md:text-4xl font-bold gradient-text mb-2">AI-Enhanced Code Challenge</h1>
+            <p class="text-gray-400">Solve this riddle with personalized AI feedback and guidance!</p>
         </div>
 
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-7xl mx-auto">
@@ -79,31 +109,44 @@
                     </div>
                 </div>
 
-                <!-- Hints section -->
+                <!-- Enhanced hints section with AI features -->
                 <div class="glass-card p-6 rounded-2xl bg-gradient-to-r from-blue-500/10 to-indigo-500/10 border border-blue-400/20">
                     <h3 class="font-bold text-blue-400 mb-3 flex items-center gap-2">
-                        💡 Pro Tips
+                        💡 AI-Enhanced Tips
                     </h3>
                     <ul class="space-y-2 text-gray-300 text-sm">
                         <li class="flex items-start gap-2">
                             <span class="text-blue-400 mt-1">•</span>
-                            <span>Read the problem carefully and understand what's expected</span>
+                            <span>AI will analyze your code and provide personalized feedback</span>
                         </li>
                         <li class="flex items-start gap-2">
                             <span class="text-blue-400 mt-1">•</span>
-                            <span>Test your code with the example before submitting</span>
+                            <span>Get suggestions for code improvements and best practices</span>
                         </li>
                         <li class="flex items-start gap-2">
                             <span class="text-blue-400 mt-1">•</span>
-                            <span>Don't be afraid to experiment - that's how you learn!</span>
+                            <span>Receive contextual hints based on your specific solution</span>
+                        </li>
+                        <li class="flex items-start gap-2">
+                            <span class="text-blue-400 mt-1">•</span>
+                            <span>Learn from detailed explanations of your approach</span>
                         </li>
                     </ul>
+                </div>
+
+                <!-- AI Status Indicator -->
+                <div class="glass-card p-4 rounded-2xl bg-gradient-to-r from-cyan-500/10 to-blue-500/10 border border-cyan-400/20">
+                    <div class="flex items-center gap-3">
+                        <div class="w-3 h-3 bg-green-400 rounded-full animate-pulse"></div>
+                        <span class="text-cyan-300 font-semibold text-sm">AI Analysis Engine: Online</span>
+                    </div>
+                    <p class="text-xs text-gray-400 mt-2">Powered by advanced code understanding technology</p>
                 </div>
             </div>
 
             <!-- Code editor and controls -->
             <div class="space-y-6">
-                <!-- Editor container -->
+                <!-- Editor container with enhanced header -->
                 <div class="glass-card rounded-2xl overflow-hidden">
                     <div class="flex items-center justify-between p-4 bg-gray-800/50 border-b border-gray-700/50">
                         <div class="flex items-center gap-3">
@@ -112,25 +155,29 @@
                                 <div class="w-3 h-3 rounded-full bg-yellow-400"></div>
                                 <div class="w-3 h-3 rounded-full bg-green-400"></div>
                             </div>
-                            <span class="text-white font-semibold">Code Editor</span>
+                            <span class="text-white font-semibold">AI Code Editor</span>
+                            <div class="ai-badge text-white px-2 py-1 rounded text-xs font-bold">
+                                🤖 Smart
+                            </div>
                         </div>
-                        <div class="flex items-center gap-2 text-sm text-gray-400">
-                            <span>Press Ctrl+Enter to run</span>
+                        <div class="flex items-center gap-4 text-sm text-gray-400">
+                            <span>Ctrl+Enter: Run</span>
+                            <span>Ctrl+S: Save</span>
                         </div>
                     </div>
                     
                     <div class="flex">
                         <div id="line-numbers" class="line-numbers">1</div>
-                        <textarea id="code-editor" class="code-editor flex-1 p-4 focus:outline-none" spellcheck="false" placeholder="// Your code goes here..."></textarea>
+                        <textarea id="code-editor" class="code-editor flex-1 p-4 focus:outline-none" spellcheck="false" placeholder="// Your code goes here... AI will analyze it for you!"></textarea>
                     </div>
                 </div>
 
-                <!-- Controls -->
+                <!-- Enhanced controls with AI indicators -->
                 <div class="flex gap-4">
-                    <button id="run-code-btn" class="flex-1 px-8 py-4 rounded-xl font-bold text-white btn-primary text-lg pulse-glow hover:scale-105 transition-all">
+                    <button id="run-code-btn" class="flex-1 px-8 py-4 rounded-xl font-bold text-white btn-primary text-lg pulse-glow hover:scale-105 transition-all relative">
                         <span class="flex items-center justify-center gap-2">
-                            <span>▶️</span>
-                            <span>Run Code</span>
+                            <span>🤖</span>
+                            <span>Run & Analyze Code</span>
                         </span>
                     </button>
                     <button id="reset-btn" class="px-6 py-4 rounded-xl font-semibold text-gray-300 bg-gray-700/50 hover:bg-gray-700 transition-all hover:scale-105">
@@ -138,29 +185,37 @@
                     </button>
                 </div>
 
-                <!-- Output container -->
+                <!-- Enhanced output container with AI section -->
                 <div id="output-container" class="glass-card rounded-2xl overflow-hidden">
                     <div class="p-4 bg-gray-800/50 border-b border-gray-700/50">
                         <div class="flex items-center justify-between">
                             <span class="font-semibold text-gray-300 flex items-center gap-2">
-                                <span>📟</span>
-                                <span>Output Console</span>
+                                <span>🤖</span>
+                                <span>AI Analysis Console</span>
                             </span>
-                            <span class="text-sm text-gray-500">Results will appear here</span>
+                            <div class="flex items-center gap-2">
+                                <div class="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                                <span class="text-sm text-gray-500">AI Ready</span>
+                            </div>
                         </div>
                     </div>
-                    <div class="p-6 min-h-[120px] bg-gray-900/50">
+                    <div class="p-6 min-h-[150px] bg-gray-900/50 relative">
                         <pre id="output-text" class="text-gray-300 whitespace-pre-wrap text-sm font-mono"></pre>
+                        <div id="ai-thinking" class="hidden absolute inset-0 flex items-center justify-center bg-gray-900/80">
+                            <div class="ai-thinking px-4 py-2 rounded-lg text-white font-semibold">
+                                🤖 AI is analyzing your code...
+                            </div>
+                        </div>
                     </div>
                 </div>
 
-                <!-- Success celebration -->
+                <!-- Success celebration with AI congratulations -->
                 <div id="success-celebration" class="glass-card p-8 rounded-2xl bg-gradient-to-r from-emerald-500/20 to-green-500/20 border border-emerald-400/30 hidden">
                     <div class="text-center">
                         <div class="text-6xl mb-4">🎉</div>
                         <h3 class="text-2xl font-bold text-emerald-400 mb-2">Riddle Solved!</h3>
-                        <p class="text-gray-300 mb-4">Excellent work! You've mastered this challenge.</p>
-                        <div class="grid grid-cols-2 gap-4 max-w-sm mx-auto mb-6">
+                        <p class="text-gray-300 mb-4">Excellent work! AI analysis confirms your solution is correct.</p>
+                        <div class="grid grid-cols-3 gap-4 max-w-md mx-auto mb-6">
                             <div class="bg-emerald-500/10 p-3 rounded-lg">
                                 <div class="text-xl font-bold text-emerald-400">+150</div>
                                 <div class="text-xs text-emerald-300">XP Bonus</div>
@@ -168,6 +223,10 @@
                             <div class="bg-yellow-500/10 p-3 rounded-lg">
                                 <div class="text-xl font-bold text-yellow-400">+15</div>
                                 <div class="text-xs text-yellow-300">Gems</div>
+                            </div>
+                            <div class="bg-blue-500/10 p-3 rounded-lg">
+                                <div class="text-xl font-bold text-blue-400">AI</div>
+                                <div class="text-xs text-blue-300">Analyzed</div>
                             </div>
                         </div>
                         <a href="/dashboard.html" class="inline-block px-6 py-3 btn-primary rounded-xl font-semibold hover:scale-105 transition-transform">
@@ -177,47 +236,19 @@
                 </div>
             </div>
         </div>
-    </main>
 
-    <script src="assets/js/riddle.js"></script>
-    
-    <script>
-        // Line numbers functionality
-        function updateLineNumbers() {
-            const editor = document.getElementById('code-editor');
-            const lineNumbers = document.getElementById('line-numbers');
-            const lines = editor.value.split('\n');
-            const lineNumbersText = lines.map((_, i) => i + 1).join('\n');
-            lineNumbers.textContent = lineNumbersText;
-        }
-
-        // Initialize line numbers
-        document.addEventListener('DOMContentLoaded', () => {
-            const editor = document.getElementById('code-editor');
-            editor.addEventListener('input', updateLineNumbers);
-            editor.addEventListener('scroll', () => {
-                const lineNumbers = document.getElementById('line-numbers');
-                lineNumbers.scrollTop = editor.scrollTop;
-            });
-            
-            // Keyboard shortcut for running code
-            editor.addEventListener('keydown', (e) => {
-                if (e.ctrlKey && e.key === 'Enter') {
-                    e.preventDefault();
-                    document.getElementById('run-code-btn').click();
-                }
-                
-                // Tab support
-                if (e.key === 'Tab') {
-                    e.preventDefault();
-                    const start = editor.selectionStart;
-                    const end = editor.selectionEnd;
-                    editor.value = editor.value.substring(0, start) + '    ' + editor.value.substring(end);
-                    editor.selectionStart = editor.selectionEnd = start + 4;
-                    updateLineNumbers();
-                }
-            });
-        });
-    </script>
-</body>
-</html>
+        <!-- AI Features Showcase -->
+        <div class="mt-12 text-center">
+            <h3 class="text-2xl font-bold text-white mb-6 flex items-center justify-center gap-2">
+                <span>🤖</span>
+                <span>Powered by Advanced AI</span>
+            </h3>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
+                <div class="glass-card p-6 rounded-xl">
+                    <div class="text-3xl mb-3">🧠</div>
+                    <h4 class="font-bold text-cyan-400 mb-2">Intelligent Analysis</h4>
+                    <p class="text-gray-400 text-sm">AI understands your code context and provides relevant suggestions</p>
+                </div>
+                <div class="glass-card p-6 rounded-xl">
+                    <div class="text-3xl mb-3">🎯</div>
+                    <h4 class="font-bold text-purple-400 mb-2
