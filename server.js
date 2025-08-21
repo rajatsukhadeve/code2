@@ -46,7 +46,7 @@ const writeDB = (data) => {
     }
 };
 
-// --- CHATBOT API FUNCTION ---
+// --- UPDATED CHATBOT API FUNCTION ---
 const getChatbotResponse = async (message, conversationHistory = []) => {
     try {
         console.log('🤖 Sending message to Worqhat API:', message.substring(0, 100) + '...');
@@ -59,24 +59,12 @@ const getChatbotResponse = async (message, conversationHistory = []) => {
             ).join('\n');
         }
 
-        // Create the payload for Worqhat API
+        // Create the payload for Worqhat API (updated to match your format)
         const payload = {
-            message: message,
-            context: context,
-            type: "coding_assistant",
-            instructions: `You are "Ask Doubt", a friendly AI coding assistant for CodeQuest platform. 
-            Help users with:
-            - Coding questions and debugging
-            - Programming concepts explanation
-            - Code review and optimization
-            - Learning guidance
-            
-            Keep responses helpful, encouraging, and focused on coding/programming topics.
-            Use emojis occasionally to make responses friendly.
-            If asked about non-coding topics, gently redirect to programming help.`
+            code: message // Using 'code' as the field name based on your example
         };
 
-        console.log('📤 Payload prepared for Worqhat API');
+        console.log('📤 Payload prepared for Worqhat API:', payload);
 
         const response = await axios.post(WORQHAT_CHAT_API_URL, payload, {
             headers: {
@@ -87,24 +75,10 @@ const getChatbotResponse = async (message, conversationHistory = []) => {
         });
 
         console.log('✅ Received response from Worqhat API');
+        console.log('📥 Full response:', JSON.stringify(response.data, null, 2));
         
-        // Extract the response from Worqhat API
-        let aiResponse = '';
-        if (response.data && response.data.response) {
-            aiResponse = response.data.response;
-        } else if (response.data && response.data.message) {
-            aiResponse = response.data.message;
-        } else if (response.data && typeof response.data === 'string') {
-            aiResponse = response.data;
-        } else {
-            aiResponse = "I understand you're looking for help with coding! Could you please be more specific about what you'd like assistance with? 🤔";
-        }
-
-        return {
-            success: true,
-            response: aiResponse,
-            source: 'worqhat_api'
-        };
+        // Return the full response from Worqhat API
+        return response.data;
 
     } catch (error) {
         console.error('❌ Worqhat API Error:', error.response?.data || error.message);
@@ -123,11 +97,18 @@ const getChatbotResponse = async (message, conversationHistory = []) => {
             fallbackResponse = generateFallbackResponse(message);
         }
 
+        // Return in the same format structure for consistency
         return {
             success: false,
-            response: fallbackResponse,
-            source: 'fallback',
-            error: error.message
+            message: 'Fallback response used',
+            timestamp: new Date().toISOString(),
+            data: {
+                success: false,
+                statusCode: '500',
+                data: { 
+                    ans: fallbackResponse 
+                }
+            }
         };
     }
 };
@@ -167,7 +148,7 @@ const generateFallbackResponse = (message) => {
     return "I'm here to help with all your coding questions! 💡 Could you tell me more about what programming concept or problem you're working on? The more specific you can be, the better I can assist you!";
 };
 
-// --- CHATBOT ENDPOINT ---
+// --- CHATBOT ENDPOINT (FIXED) ---
 app.post('/api/chat', async (req, res) => {
     console.log('=== CHAT REQUEST ===');
     const { message, conversationHistory } = req.body;
@@ -195,18 +176,37 @@ app.post('/api/chat', async (req, res) => {
         // Get response from Worqhat API
         const aiResult = await getChatbotResponse(message, conversationHistory);
         
+        console.log('🤖 AI Result:', aiResult);
+        
         // Save chat interaction to database (optional)
         const db = readDB();
         if (!db.chatHistory) {
             db.chatHistory = [];
         }
         
+        // Extract response based on the structure you provided
+        let responseText = '';
+        let success = false;
+        
+        if (aiResult && aiResult.data && aiResult.data.data && aiResult.data.data.ans) {
+            responseText = aiResult.data.data.ans;
+            success = true;
+            console.log('✅ Successfully extracted AI response');
+        } else if (aiResult && aiResult.response) {
+            responseText = aiResult.response;
+            success = aiResult.success || false;
+            console.log('✅ Using fallback response format');
+        } else {
+            responseText = "I'm having trouble processing your request right now. Please try again! 🤖";
+            success = false;
+            console.log('⚠️ Using default error response');
+        }
+        
         db.chatHistory.push({
             timestamp: new Date().toISOString(),
             userMessage: message,
-            aiResponse: aiResult.response,
-            source: aiResult.source,
-            success: aiResult.success
+            aiResponse: responseText,
+            success: success
         });
         
         // Keep only last 100 chat interactions to prevent database bloat
@@ -220,11 +220,8 @@ app.post('/api/chat', async (req, res) => {
         console.log('✅ Chat response sent successfully');
         console.log('=== END CHAT REQUEST ===');
         
-        res.json({
-            success: true,
-            response: aiResult.response,
-            source: aiResult.source
-        });
+        // Return the response in the format that matches your Worqhat API response
+        res.json(aiResult);
 
     } catch (error) {
         console.error('❌ Chat endpoint error:', error);
@@ -690,6 +687,21 @@ app.get('/chatbot.html', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'chatbot.html'));
 });
 
+// Serve dashboard.html
+app.get('/dashboard.html', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'dashboard.html'));
+});
+
+// Serve lesson.html
+app.get('/lesson.html', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'lesson.html'));
+});
+
+// Serve riddle.html
+app.get('/riddle.html', (req, res) => {
+    res.sendFile(path.join(__dirname, 'public', 'riddle.html'));
+});
+
 // DEBUG ENDPOINT - Remove in production
 app.get('/debug/riddles', (req, res) => {
     res.json({
@@ -704,29 +716,89 @@ app.get('/debug/chat-history', (req, res) => {
     const db = readDB();
     res.json({
         chatHistory: db.chatHistory || [],
-        totalChats: (db.chatHistory || []).length
+        totalChats: (db.chatHistory || []).length,
+        recentChats: (db.chatHistory || []).slice(-10)
+    });
+});
+
+// API status endpoint
+app.get('/api/status', (req, res) => {
+    res.json({
+        status: 'active',
+        timestamp: new Date().toISOString(),
+        worqhatApi: {
+            url: WORQHAT_CHAT_API_URL,
+            configured: !!WORQHAT_API_KEY
+        },
+        features: {
+            chatbot: true,
+            codeAnalysis: true,
+            learningPaths: true,
+            riddleSystem: true
+        },
+        version: '1.0.0'
+    });
+});
+
+// Health check endpoint
+app.get('/health', (req, res) => {
+    res.json({ 
+        status: 'healthy', 
+        timestamp: new Date().toISOString(),
+        uptime: process.uptime()
     });
 });
 
 // ERROR HANDLING MIDDLEWARE
 app.use((err, req, res, next) => {
     console.error('Server error:', err);
-    res.status(500).json({ error: 'Internal server error', message: err.message });
+    res.status(500).json({ 
+        error: 'Internal server error', 
+        message: err.message,
+        timestamp: new Date().toISOString()
+    });
 });
 
 // 404 HANDLER
 app.use((req, res) => {
     console.log('404 - Route not found:', req.url);
-    res.status(404).json({ error: 'Route not found', url: req.url });
+    res.status(404).json({ 
+        error: 'Route not found', 
+        url: req.url,
+        timestamp: new Date().toISOString(),
+        availableEndpoints: [
+            'GET /',
+            'GET /home',
+            'GET /register',
+            'GET /chatbot.html',
+            'GET /dashboard.html',
+            'POST /api/register',
+            'POST /api/login',
+            'POST /api/chat',
+            'GET /api/dashboard',
+            'GET /api/lesson',
+            'GET /api/riddle',
+            'POST /api/analyze-code',
+            'GET /api/leaderboard',
+            'GET /api/quests',
+            'GET /api/status',
+            'GET /health'
+        ]
+    });
 });
 
 // --- START SERVER ---
 app.listen(PORT, () => {
     console.log(`🚀 Server is running on http://localhost:${PORT}`);
     console.log(`🤖 Worqhat AI integration enabled for chatbot and code analysis`);
-    console.log(`💬 Chatbot endpoint: /api/chat`);
+    console.log(`💬 Chatbot endpoint: POST /api/chat`);
     console.log(`📚 Available riddles: ${Object.keys(riddleData).join(', ')}`);
     console.log(`📊 Total riddles loaded: ${Object.keys(riddleData).length}`);
     console.log(`📝 Available lessons: ${Object.keys(lessonData).join(', ')}`);
+    console.log(`🔧 Debug endpoints available:`);
+    console.log(`   - GET /debug/riddles`);
+    console.log(`   - GET /debug/chat-history`);
+    console.log(`   - GET /api/status`);
+    console.log(`   - GET /health`);
     console.log(`=== Server Ready ===`);
 });

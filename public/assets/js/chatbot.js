@@ -12,31 +12,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Initialize chat
     function initializeChat() {
-        // Load chat history from localStorage if available
-        const savedHistory = localStorage.getItem('codequest-chat-history');
-        if (savedHistory) {
-            try {
-                conversationHistory = JSON.parse(savedHistory);
-                displayChatHistory();
-            } catch (error) {
-                console.error('Error loading chat history:', error);
-                conversationHistory = [];
-            }
-        }
-
+        // Load chat history from session storage (not localStorage due to Claude restrictions)
+        // But for demo purposes, we'll start fresh each time
+        conversationHistory = [];
+        
         // Focus on input
         chatInput.focus();
-    }
-
-    // Display chat history
-    function displayChatHistory() {
-        if (conversationHistory.length > 0) {
-            welcomeSection.style.display = 'none';
-            conversationHistory.forEach(message => {
-                appendMessage(message.content, message.isUser, false);
-            });
-            scrollToBottom();
-        }
+        
+        console.log('🤖 Ask Doubt chatbot initialized!');
     }
 
     // Auto-resize textarea
@@ -104,7 +87,11 @@ document.addEventListener('DOMContentLoaded', () => {
         // Save to history
         if (saveToHistory) {
             conversationHistory.push({ content, isUser, timestamp: new Date().toISOString() });
-            saveConversationHistory();
+            
+            // Keep only last 20 messages to prevent memory bloat
+            if (conversationHistory.length > 20) {
+                conversationHistory = conversationHistory.slice(-20);
+            }
         }
         
         scrollToBottom();
@@ -171,6 +158,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
             showTypingIndicator();
             
+            console.log('📤 Sending message to server:', message.substring(0, 100) + '...');
+            
             const response = await fetch('/api/chat', {
                 method: 'POST',
                 headers: {
@@ -182,32 +171,45 @@ document.addEventListener('DOMContentLoaded', () => {
                 })
             });
 
+            hideTypingIndicator();
+
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
 
             const data = await response.json();
             
-            hideTypingIndicator();
+            console.log('📥 Received response from server:', data);
             
-            // **MODIFIED SECTION**: This logic now correctly parses your specific API response.
-            if (data.success && data.data && data.data.data && data.data.data.ans) {
-                const answer = data.data.data.ans;
+            // FIXED: Parse the response correctly based on your API structure
+            if (data && data.data && data.data.data && data.data.data.ans) {
+                // Extract the answer from the nested structure
+                const answer = data.data.data.ans.trim();
+                console.log('✅ AI Answer extracted:', answer);
                 appendMessage(answer, false);
+            } else if (data && data.response) {
+                // Fallback response format
+                console.log('✅ Fallback response used:', data.response);
+                appendMessage(data.response, false);
             } else {
-                appendMessage("I apologize, but I received an unexpected response. Please try again in a moment. 🤔", false);
+                console.warn('⚠️ Unexpected response format:', data);
+                appendMessage("I received your message but couldn't process the response properly. Could you please try asking again? 🤔", false);
             }
 
         } catch (error) {
-            console.error('Error sending message:', error);
+            console.error('❌ Error sending message:', error);
             hideTypingIndicator();
             
             let errorMessage = "I'm currently experiencing some technical difficulties. ";
             
             if (error.name === 'TypeError' && error.message.includes('fetch')) {
                 errorMessage += "Please check your internet connection and try again. 🔌";
+            } else if (error.message.includes('500')) {
+                errorMessage += "The server seems to be having issues. Please try again in a moment. ⚠️";
+            } else if (error.message.includes('timeout')) {
+                errorMessage += "The request timed out. Please try again. ⏰";
             } else {
-                errorMessage += "Please try again in a moment. ⚠️";
+                errorMessage += "Please try again in a moment. 💫";
             }
             
             appendMessage(errorMessage, false);
@@ -218,6 +220,8 @@ document.addEventListener('DOMContentLoaded', () => {
     function handleSendMessage() {
         const message = chatInput.value.trim();
         if (!message || message.length > 2000) return;
+
+        console.log('🚀 Sending message:', message);
 
         // Add user message to chat
         appendMessage(message, true);
@@ -231,24 +235,14 @@ document.addEventListener('DOMContentLoaded', () => {
         sendMessage(message);
     }
 
-    // Save conversation history to localStorage
-    function saveConversationHistory() {
-        try {
-            // Keep only last 50 messages to prevent localStorage bloat
-            const limitedHistory = conversationHistory.slice(-50);
-            localStorage.setItem('codequest-chat-history', JSON.stringify(limitedHistory));
-        } catch (error) {
-            console.error('Error saving chat history:', error);
-        }
-    }
-
     // Clear chat history
     function clearChat() {
         if (confirm('Are you sure you want to clear the chat history? This action cannot be undone.')) {
             conversationHistory = [];
             chatMessages.innerHTML = '';
-            localStorage.removeItem('codequest-chat-history');
             welcomeSection.style.display = 'block';
+            
+            console.log('🗑️ Chat history cleared');
             
             // Show success message
             setTimeout(() => {
@@ -267,6 +261,7 @@ document.addEventListener('DOMContentLoaded', () => {
             if (questionDiv) {
                 chatInput.value = questionDiv.textContent;
                 updateInputState();
+                autoResizeTextarea();
                 chatInput.focus();
             }
         });
@@ -312,8 +307,5 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Show notification when chat is ready
-    setTimeout(() => {
-        console.log('🤖 Ask Doubt chatbot is ready!');
-    }, 500);
+    console.log('🤖 Ask Doubt chatbot is ready!');
 });

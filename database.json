@@ -46,12 +46,12 @@
             "username": "prasad",
             "password": "prasad",
             "progress": {
-                "xp": 400,
+                "xp": 550,
                 "level": 3,
                 "xpToNextLevel": 1125,
                 "badges": [],
-                "dailyStreak": 14,
-                "gems": 145
+                "dailyStreak": 15,
+                "gems": 160
             },
             "codeSubmissions": [
                 {
@@ -122,6 +122,13 @@
                     "code": "def solve():\n    nums = [2, 7, 11, 15]\n    target = 9\n    # Your code goes here\n    # Hint: Use a dictionary to store numbers you've seen\n    \n    return [0,1]  # Return the indices",
                     "isCorrect": true,
                     "timestamp": "2025-08-19T15:57:49.437Z",
+                    "aiAnalysis": "Workflow 1923e305-a659-4a5d-ac7d-a1702094840f triggered successfully"
+                },
+                {
+                    "riddleId": "python_two_sum",
+                    "code": "def solve():\n    nums = [2, 7, 11, 15]\n    target = 9\n    # Your code goes here\n    # Hint: Use a dictionary to store numbers you've seen\n    \n    return [0,1]  # Return the indices",
+                    "isCorrect": true,
+                    "timestamp": "2025-08-20T17:02:49.036Z",
                     "aiAnalysis": "Workflow 1923e305-a659-4a5d-ac7d-a1702094840f triggered successfully"
                 }
             ]
@@ -316,6 +323,275 @@
             "userMessage": "hi",
             "aiResponse": "Workflow 1923e305-a659-4a5d-ac7d-a1702094840f triggered successfully",
             "source": "worqhat_api",
+            "success": true
+        },
+        {
+            "timestamp": "2025-08-19T17:06:29.486Z",
+            "userMessage": "hi",
+            "aiResponse": "Workflow 1923e305-a659-4a5d-ac7d-a1702094840f triggered successfully",
+            "source": "worqhat_api",
+            "success": true
+        },
+        {
+            "timestamp": "2025-08-19T17:08:44.203Z",
+            "userMessage": "hi",
+            "aiResponse": "Workflow 1923e305-a659-4a5d-ac7d-a1702094840f triggered successfully",
+            "source": "worqhat_api",
+            "success": true
+        },
+        {
+            "timestamp": "2025-08-19T17:19:41.280Z",
+            "userMessage": "hi",
+            "aiResponse": "Workflow 1923e305-a659-4a5d-ac7d-a1702094840f triggered successfully",
+            "source": "worqhat_api",
+            "success": true
+        },
+        {
+            "timestamp": "2025-08-19T17:24:57.892Z",
+            "userMessage": "hi",
+            "aiResponse": "Workflow 1923e305-a659-4a5d-ac7d-a1702094840f triggered successfully",
+            "source": "worqhat_api",
+            "success": true
+        },
+        {
+            "timestamp": "2025-08-19T17:28:05.245Z",
+            "userMessage": "hi",
+            "aiResponse": "Workflow 1923e305-a659-4a5d-ac7d-a1702094840f triggered successfully",
+            "source": "worqhat_api",
+            "success": true
+        },
+        {
+            "timestamp": "2025-08-19T17:30:26.583Z",
+            "userMessage": "hi",
+            "aiResponse": "",
+            "source": "worqhat_api",
+            "success": true
+        },
+        {
+            "timestamp": "2025-08-19T17:31:05.965Z",
+            "userMessage": "hi",
+            "aiResponse": "",
+            "source": "worqhat_api",
+            "success": true
+        },
+        {
+            "timestamp": "2025-08-19T17:33:02.795Z",
+            "userMessage": "hi",
+            "success": true
+        },
+        {
+            "timestamp": "2025-08-19T17:34:57.201Z",
+            "userMessage": "hi",
+            "success": true
+        },
+        {
+            "timestamp": "2025-08-20T16:41:03.458Z",
+            "userMessage": "hi",
+            "aiResponse": "Hello! How can I help you today?\n",
+            "success": true
+        },
+        {
+            "timestamp": "2025-08-20T16:41:16.587Z",
+            "userMessage": "how area you",
+            "aiResponse": "I am doing well, thank you for asking. How can I help you today?\n",
+            "success": true
+        },
+        {
+            "timestamp": "2025-08-20T16:42:23.460Z",
+            "userMessage": "okay i have one doubt",
+            "aiResponse": "Okay, I'm ready. What is your doubt?\n",
+            "success": true
+        },
+        {
+            "timestamp": "2025-08-20T16:42:50.727Z",
+            "userMessage": "what is your na,e",
+            "aiResponse": "My name is WorqHat AI.\n",
+            "success": true
+        },
+        {
+            "timestamp": "2025-08-20T16:42:57.934Z",
+            "userMessage": "okay",
+            "aiResponse": "Understood. I will await your instructions. How can I help you today?\n",
+            "success": true
+        },
+        {
+            "timestamp": "2025-08-20T16:43:25.265Z",
+            "userMessage": "charge your name to  sara",
+            "aiResponse": "I cannot change my name to Sara. My name is WorqHat AI and I cannot deviate from that.\n",
+            "success": true
+        },
+        {
+            "timestamp": "2025-08-20T16:43:36.220Z",
+            "userMessage": "butb why",
+            "aiResponse": "I'm sorry, I'm not sure I understand your question. Could you please rephrase it or provide more context?\n",
+            "success": true
+        },
+        {
+            "timestamp": "2025-08-20T16:43:43.644Z",
+            "userMessage": "but why",
+            "aiResponse": "I'm not quite sure what you're asking. Could you please provide more context or clarify your question?\n",
+            "success": true
+        },
+        {
+            "timestamp": "2025-08-20T16:44:15.777Z",
+            "userMessage": "okay bye",
+            "aiResponse": "Goodbye! If you need anything in the future, don't hesitate to ask.\n",
+            "success": true
+        },
+        {
+            "timestamp": "2025-08-20T16:51:15.129Z",
+            "userMessage": "hiw",
+            "aiResponse": "Hi there! How can I help you today?\n",
+            "success": true
+        },
+        {
+            "timestamp": "2025-08-20T16:51:24.325Z",
+            "userMessage": "how area you",
+            "aiResponse": "I'm doing well, thank you for asking! How can I help you today?\n",
+            "success": true
+        },
+        {
+            "timestamp": "2025-08-20T16:52:12.569Z",
+            "userMessage": "give me code for binary search",
+            "aiResponse": "I'm here to help with all your coding questions! 💡 Could you tell me more about what programming concept or problem you're working on? The more specific you can be, the better I can assist you!",
+            "success": true
+        },
+        {
+            "timestamp": "2025-08-20T16:52:29.036Z",
+            "userMessage": "binary search",
+            "aiResponse": "I'm here to help with all your coding questions! 💡 Could you tell me more about what programming concept or problem you're working on? The more specific you can be, the better I can assist you!",
+            "success": true
+        },
+        {
+            "timestamp": "2025-08-20T16:52:48.488Z",
+            "userMessage": "i want code on binary search",
+            "aiResponse": "I'm here to help with all your coding questions! 💡 Could you tell me more about what programming concept or problem you're working on? The more specific you can be, the better I can assist you!",
+            "success": true
+        },
+        {
+            "timestamp": "2025-08-20T16:52:53.243Z",
+            "userMessage": "hle",
+            "aiResponse": "I'm here to help with all your coding questions! 💡 Could you tell me more about what programming concept or problem you're working on? The more specific you can be, the better I can assist you!",
+            "success": true
+        },
+        {
+            "timestamp": "2025-08-20T16:52:57.265Z",
+            "userMessage": "hle",
+            "aiResponse": "I'm here to help with all your coding questions! 💡 Could you tell me more about what programming concept or problem you're working on? The more specific you can be, the better I can assist you!",
+            "success": true
+        },
+        {
+            "timestamp": "2025-08-20T16:53:01.377Z",
+            "userMessage": "hii",
+            "aiResponse": "I'm here to help with all your coding questions! 💡 Could you tell me more about what programming concept or problem you're working on? The more specific you can be, the better I can assist you!",
+            "success": true
+        },
+        {
+            "timestamp": "2025-08-20T16:53:14.165Z",
+            "userMessage": "hi",
+            "aiResponse": "I'm here to help with all your coding questions! 💡 Could you tell me more about what programming concept or problem you're working on? The more specific you can be, the better I can assist you!",
+            "success": true
+        },
+        {
+            "timestamp": "2025-08-20T16:53:17.667Z",
+            "userMessage": "jkasdf",
+            "aiResponse": "I'm here to help with all your coding questions! 💡 Could you tell me more about what programming concept or problem you're working on? The more specific you can be, the better I can assist you!",
+            "success": true
+        },
+        {
+            "timestamp": "2025-08-20T16:57:04.992Z",
+            "userMessage": "hi",
+            "aiResponse": "I'm here to help with all your coding questions! 💡 Could you tell me more about what programming concept or problem you're working on? The more specific you can be, the better I can assist you!",
+            "success": true
+        },
+        {
+            "timestamp": "2025-08-20T17:00:00.168Z",
+            "userMessage": "hi",
+            "aiResponse": "Hi there! How can I help you today?\n",
+            "success": true
+        },
+        {
+            "timestamp": "2025-08-20T17:00:17.441Z",
+            "userMessage": "how are you",
+            "aiResponse": "I am doing well, thank you for asking. How can I help you today?\n",
+            "success": true
+        },
+        {
+            "timestamp": "2025-08-20T17:01:00.512Z",
+            "userMessage": "give me code of binary search",
+            "aiResponse": "```python\ndef binary_search(list_of_numbers, target):\n    \"\"\"\n    Performs a binary search on a sorted list to find the index of a target value.\n\n    Args:\n      list_of_numbers: A sorted list of numbers.\n      target: The value to search for.\n\n    Returns:\n      The index of the target in the list if found, otherwise -1.\n    \"\"\"\n\n    low = 0\n    high = len(list_of_numbers) - 1\n\n    while low <= high:\n        mid = (low + high) // 2  # Integer division to find the middle index\n\n        if list_of_numbers[mid] == target:\n            return mid  # Target found at index mid\n        elif list_of_numbers[mid] < target:\n            low = mid + 1  # Target is in the right half\n        else:\n            high = mid - 1  # Target is in the left half\n\n    return -1  # Target not found\n\n# Example usage:\nsorted_list = [2, 5, 7, 8, 11, 12]\ntarget_value = 13\n\nresult = binary_search(sorted_list, target_value)\n\nif result != -1:\n    print(f\"Target {target_value} found at index {result}\")\nelse:\n    print(f\"Target {target_value} not found in the list\")\n```",
+            "success": true
+        },
+        {
+            "timestamp": "2025-08-20T17:01:37.769Z",
+            "userMessage": "in java",
+            "aiResponse": "Could you please clarify what you need help with in Java? I need more context to provide a useful response. For example, are you looking for:\n\n*   Help with a specific coding problem?\n*   An explanation of a Java concept?\n*   Code examples?\n*   Something else entirely?\n\nThe more information you provide, the better I can assist you.\n",
+            "success": true
+        },
+        {
+            "timestamp": "2025-08-20T17:02:04.091Z",
+            "userMessage": "i want binary search code in java",
+            "aiResponse": "```java\nclass BinarySearch {\n    /**\n     * Performs binary search on a sorted array to find the index of a target value.\n     *\n     * @param arr The sorted array to search.\n     * @param target The value to search for.\n     * @return The index of the target value if found, or -1 if not found.\n     */\n    public static int binarySearch(int[] arr, int target) {\n        int left = 0;\n        int right = arr.length - 1;\n\n        while (left <= right) {\n            int mid = left + (right - left) / 2; // Calculate mid to avoid potential overflow\n\n            if (arr[mid] == target) {\n                return mid; // Target found at index mid\n            } else if (arr[mid] < target) {\n                left = mid + 1; // Target is in the right half\n            } else {\n                right = mid - 1; // Target is in the left half\n            }\n        }\n\n        return -1; // Target not found\n    }\n\n    public static void main(String[] args) {\n        int[] arr = {2, 5, 8, 12, 16, 23, 38, 56, 72, 91};\n        int target = 23;\n        int index = binarySearch(arr, target);\n\n        if (index == -1) {\n            System.out.println(\"Target not found in the array.\");\n        } else {\n            System.out.println(\"Target found at index: \" + index);\n        }\n    }\n}\n```\n\n**Explanation:**\n\n1.  **`binarySearch(int[] arr, int target)` Function:**\n    *   Takes a sorted integer array `arr` and the integer `target` to search for as input.\n    *   Initializes `left` to 0 (the start index of the array) and `right` to `arr.length - 1` (the end index of the array).\n    *   Enters a `while` loop that continues as long as `left` is less than or equal to `right`. This means there's still a portion of the array to search.\n    *   **Calculate `mid`:**  `int mid = left + (right - left) / 2;`  This is the most important part.  It calculates the middle index of the current search space.  The `(right - left) / 2` part is used instead of `(left + right) / 2` to prevent potential integer overflow issues when `left` and `right` are very large.\n    *   **Compare `arr[mid]` with `target`:**\n        *   If `arr[mid] == target`, the target is found, and the function returns `mid` (the index of the target).\n        *   If `arr[mid] < target`, the target must be in the right half of the array (if it exists). So, `left` is updated to `mid + 1`.\n        *   If `arr[mid] > target`, the target must be in the left half of the array (if it exists). So, `right` is updated to `mid - 1`.\n    *   If the `while` loop finishes without finding the target (i.e., `left` becomes greater than `right`), the function returns `-1`, indicating that the target is not in the array.\n\n2.  **`main` Function (Example Usage):**\n    *   Creates a sample sorted array `arr`.\n    *   Sets a `target` value to search for.\n    *   Calls the `binarySearch` function to find the index of the target.\n    *   Prints the result to the console, indicating whether the target was found and, if so, its index.\n\n**Key Concepts of Binary Search:**\n\n*   **Sorted Array:** Binary search *only* works on sorted arrays.\n*   **Divide and Conquer:** It repeatedly divides the search interval in half.\n*   **Efficiency:**  Binary search has a time complexity of O(log n), which is very efficient for large arrays.  This means the number of operations grows logarithmically with the size of the array.\n*   **Integer Overflow Prevention:** The way `mid` is calculated prevents potential integer overflow.\n\n**How it Works (Example):**\n\nLet's say `arr = {2, 5, 8, 12, 16, 23, 38, 56, 72, 91}` and `target = 23`.\n\n1.  `left = 0`, `right = 9`\n2.  `mid = 0 + (9 - 0) / 2 = 4`  `arr[4] = 16`\n3.  `16 < 23`, so `left = 5`\n4.  `mid = 5 + (9 - 5) / 2 = 7`  `arr[7] = 56`\n5.  `56 > 23`, so `right = 6`\n6.  `mid = 5 + (6 - 5) / 2 = 5`  `arr[5] = 23`\n7.  `23 == 23`, so return `5` (the index where 23 is found).\n",
+            "success": true
+        },
+        {
+            "timestamp": "2025-08-21T04:06:12.110Z",
+            "userMessage": "hi",
+            "aiResponse": "Hi there! How can I help you today?\n",
+            "success": true
+        },
+        {
+            "timestamp": "2025-08-21T04:06:22.476Z",
+            "userMessage": "how are you",
+            "aiResponse": "I am doing well, thank you for asking. How can I help you today?\n",
+            "success": true
+        },
+        {
+            "timestamp": "2025-08-21T04:06:44.186Z",
+            "userMessage": "give me example of inheritance in java",
+            "aiResponse": "```java\n// Base class or Parent class\nclass Animal {\n    String name;\n\n    public Animal(String name) {\n        this.name = name;\n    }\n\n    public void eat() {\n        System.out.println(name + \" is eating.\");\n    }\n\n    public void sleep() {\n        System.out.println(name + \" is sleeping.\");\n    }\n}\n\n// Derived class or Child class inheriting from Animal\nclass Dog extends Animal {\n    String breed;\n\n    public Dog(String name, String breed) {\n        // Call the constructor of the parent class using super()\n        super(name);\n        this.breed = breed;\n    }\n\n    public void bark() {\n        System.out.println(name + \" (a \" + breed + \") is barking.\");\n    }\n}\n\npublic class Main {\n    public static void main(String[] args) {\n        // Creating an object of the Dog class\n        Dog myDog = new Dog(\"Buddy\", \"Golden Retriever\");\n\n        // Accessing methods from the Animal class (inherited)\n        myDog.eat();   // Output: Buddy is eating.\n        myDog.sleep(); // Output: Buddy is sleeping.\n\n        // Accessing method specific to the Dog class\n        myDog.bark();  // Output: Buddy (a Golden Retriever) is barking.\n    }\n}\n```\n\n**Explanation:**\n\n1.  **`Animal` Class (Base/Parent):**\n    *   This class defines the general characteristics of an animal, such as having a `name`, and the ability to `eat()` and `sleep()`.\n\n2.  **`Dog` Class (Derived/Child):**\n    *   The `Dog` class `extends Animal`. This means `Dog` inherits all the properties and methods of the `Animal` class.\n    *   The `Dog` class has its own specific property `breed` and method `bark()`.\n    *   The `super(name)` call in the `Dog` constructor calls the constructor of the `Animal` class to initialize the inherited `name` field.\n\n3.  **`Main` Class:**\n    *   An object `myDog` of the `Dog` class is created.\n    *   `myDog` can access the `eat()` and `sleep()` methods inherited from the `Animal` class, as well as its own `bark()` method.\n\n**Key Concepts Demonstrated:**\n\n*   **Inheritance:** The `Dog` class inherits the `name`, `eat()`, and `sleep()` members from the `Animal` class.\n*   **`extends` Keyword:**  Used to indicate that a class inherits from another class.\n*   **`super()` Keyword:** Used to call the constructor of the parent class.  It must be the first statement in the child class's constructor.\n*   **Code Reusability:** Inheritance promotes code reusability. The `Dog` class doesn't need to reimplement the `eat()` and `sleep()` methods; it inherits them directly.\n*   **Polymorphism:** While not explicitly shown in this example, inheritance is a key component of polymorphism.  You could, for example, create an array of `Animal` objects that can hold both `Animal` and `Dog` objects, and call the `eat()` method on each element, resulting in different behavior based on the actual object type.\n",
+            "success": true
+        },
+        {
+            "timestamp": "2025-08-21T04:07:10.932Z",
+            "userMessage": "prasad in nalla",
+            "aiResponse": "I'm sorry, I don't understand your request. Could you please rephrase your question or provide more context?\n",
+            "success": true
+        },
+        {
+            "timestamp": "2025-08-21T04:07:32.087Z",
+            "userMessage": "rajat is gay",
+            "aiResponse": "I understand. I am designed to be a helpful and harmless AI assistant. I will not generate responses that are hateful, discriminatory, or promote violence.\n",
+            "success": true
+        },
+        {
+            "timestamp": "2025-08-21T04:07:48.396Z",
+            "userMessage": "my name is  rajat and i am gay",
+            "aiResponse": "Okay, Rajat. Thanks for sharing that with me. How can I help you today?\n",
+            "success": true
+        },
+        {
+            "timestamp": "2025-08-21T04:08:42.241Z",
+            "userMessage": "no ..it wass my friend prasad  and he is gay....",
+            "aiResponse": "I understand that you're talking about your friend Prasad. I am an AI assistant, and I'm here to help with tasks and provide information. If you have any questions or need assistance with something specific, please let me know.\n",
+            "success": true
+        },
+        {
+            "timestamp": "2025-08-21T04:09:05.113Z",
+            "userMessage": "okay",
+            "aiResponse": "Understood. How can I assist you today?\n",
+            "success": true
+        },
+        {
+            "timestamp": "2025-08-21T04:09:39.128Z",
+            "userMessage": "implement concpet of inheritance for ynivercity  acadamic system where a base class person is extended by student , faculty and adminStaff. each subclass as specif attributes and methods...methods...students enro;ll in course...Faculty grades students...admin staff manages records...and inplement  polymorphitic behcvior and override comman methods",
+            "aiResponse": "Okay, I understand. You want me to design a Python implementation of an academic system using inheritance, polymorphism, and method overriding. Here's a breakdown of how I'll approach this, followed by the code:\n\n**Design Considerations:**\n\n1.  **Base Class (Person):**  This will hold common attributes like name, ID, and contact information.\n2.  **Subclasses (Student, Faculty, AdminStaff):** Each subclass will inherit from `Person` and add specific attributes and methods relevant to their roles.\n3.  **Polymorphism:** I'll use method overriding to demonstrate polymorphism. For example, a common method like `get_details()` will behave differently for each subclass.\n4.  **Specific Methods:**\n    *   `Student`: `enroll_course()`\n    *   `Faculty`: `grade_student()`\n    *   `AdminStaff`: `manage_records()`\n\n**Python Implementation:**\n\n```python\nclass Person:\n    def __init__(self, name, person_id, contact_info):\n        self.name = name\n        self.person_id = person_id\n        self.contact_info = contact_info\n\n    def get_details(self):\n        return f\"Name: {self.name}, ID: {self.person_id}, Contact: {self.contact_info}\"\n\n\nclass Student(Person):\n    def __init__(self, name, person_id, contact_info, major):\n        super().__init__(name, person_id, contact_info)\n        self.major = major\n        self.courses = []\n\n    def enroll_course(self, course_name):\n        self.courses.append(course_name)\n        return f\"{self.name} enrolled in {course_name}\"\n\n    def get_details(self):\n        base_details = super().get_details()\n        return f\"{base_details}, Major: {self.major}, Courses: {', '.join(self.courses) or 'None'}\"\n\n\nclass Faculty(Person):\n    def __init__(self, name, person_id, contact_info, department):\n        super().__init__(name, person_id, contact_info)\n        self.department = department\n        self.courses_taught = []\n\n    def assign_course(self, course_name):\n        self.courses_taught.append(course_name)\n        return f\"{self.name} assigned to teach {course_name}\"\n\n    def grade_student(self, student, course, grade):\n        return f\"{self.name} graded {student.name} in {course} with {grade}\"\n\n    def get_details(self):\n        base_details = super().get_details()\n        return f\"{base_details}, Department: {self.department}, Courses Taught: {', '.join(self.courses_taught) or 'None'}\"\n\n\nclass AdminStaff(Person):\n    def __init__(self, name, person_id, contact_info, role):\n        super().__init__(name, person_id, contact_info)\n        self.role = role\n\n    def manage_records(self, action, record_type, record_id):\n        return f\"{self.name} performed '{action}' on {record_type} record with ID {record_id}\"\n\n    def get_details(self):\n        base_details = super().get_details()\n        return f\"{base_details}, Role: {self.role}\"\n\n\n# Example Usage:\nstudent1 = Student(\"Alice\", \"S123\", \"alice@example.com\", \"Computer Science\")\nfaculty1 = Faculty(\"Bob\", \"F456\", \"bob@example.com\", \"Engineering\")\nadmin1 = AdminStaff(\"Charlie\", \"A789\", \"charlie@example.com\", \"Registrar\")\n\nprint(student1.enroll_course(\"Introduction to Python\"))\nprint(faculty1.assign_course(\"Introduction to Python\"))\nprint(faculty1.grade_student(student1, \"Introduction to Python\", \"A\"))\nprint(admin1.manage_records(\"Update\", \"Student\", \"S123\"))\n\nprint(student1.get_details())\nprint(faculty1.get_details())\nprint(admin1.get_details())\n```\n\n**Explanation:**\n\n*   **`Person` Class:** The base class contains attributes common to all members of the university. The `get_details()` method provides a basic description.\n*   **`Student`, `Faculty`, `AdminStaff` Classes:** These classes inherit from `Person`.  Each adds attributes specific to their role (e.g., `major` for students, `department` for faculty, `role` for admin staff).\n*   **`enroll_course()`, `grade_student()`, `manage_records()`:**  These are role-specific methods.\n*   **Method Overriding (`get_details()`):**  Each subclass overrides the `get_details()` method to include its specific attributes in the description. The `super()` function is used to call the parent class's `get_details()` method and then add to it.\n*   **Polymorphism:** The `get_details()` method demonstrates polymorphism.  When called on different objects (student1, faculty1, admin1), it produces different output based on the object's class.\n\n**Key Improvements and Considerations:**\n\n*   **Error Handling:**  In a real-world system, you would add error handling (e.g., checking if a student is already enrolled in a course, validating grades).\n*   **Data Storage:** This example keeps data in memory. A real system would use a database to store persistent data.\n*   **Relationships:** You could add relationships between students and courses, faculty and courses, etc.  For example, a `Course` class could contain a list of enrolled students and the faculty member teaching it.\n*   **More Complex Logic:** You could add more complex logic to methods (e.g., calculating GPA, generating reports, managing user accounts).\n*   **Abstraction:** You could consider adding abstract base classes (ABCs) if you have methods that *must* be implemented by subclasses.\n*   **Modularity:** For a large system, consider breaking down the code into separate modules.\n*   **Testing:**  Write unit tests to ensure the code is working correctly.\n\nLet me know if you'd like me to elaborate on any of these points or add more features to the implementation!\n",
+            "success": true
+        },
+        {
+            "timestamp": "2025-08-21T04:10:04.092Z",
+            "userMessage": "thank you ..okay bye ...",
+            "aiResponse": "You're welcome! Bye! Let me know if you need anything else in the future.\n",
             "success": true
         }
     ]
